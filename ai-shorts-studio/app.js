@@ -1,6 +1,6 @@
 (() => {
 const $ = id => document.getElementById(id);
-const file=$("videoFile"),video=$("source"),start=$("start"),end=$("end"),hook=$("hook"),captions=$("captions"),status=$("status"),preview=$("previewClip"),exportBtn=$("export"),download=$("download");
+const file=$("videoFile"),video=$("source"),start=$("start"),end=$("end"),hook=$("hook"),captions=$("captions"),status=$("status"),preview=$("previewClip"),exportBtn=$("export"),download=$("download"),accessCode=$("accessCode");\naccessCode.value=sessionStorage.getItem("ytcs_access_code")||"";accessCode.addEventListener("input",()=>sessionStorage.setItem("ytcs_access_code",accessCode.value));
 let sourceUrl=null,exportUrl=null,busy=false;
 const say=m=>status.textContent=m;
 const duration=()=>Number(end.value)-Number(start.value);
@@ -30,7 +30,7 @@ $("analyzeYoutube").addEventListener("click",async()=>{
   const button=$("analyzeYoutube");button.disabled=true;button.textContent="Gemini is watching…";aiResults.classList.add("hidden");
   say("Sending the public video URL to Gemini for timestamped highlight analysis…");
   try {
-    const response=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({youtubeUrl:raw})});
+    const response=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json","x-studio-access":accessCode.value},body:JSON.stringify({youtubeUrl:raw})});
     const payload=await response.json();
     if(!response.ok)throw new Error(payload.error||"Gemini analysis failed.");
     const clips=Array.isArray(payload.clips)?payload.clips:[];
