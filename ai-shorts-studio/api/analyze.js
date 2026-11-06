@@ -25,6 +25,12 @@ module.exports = async function handler(req, res) {
     try { if (new URL(origin).host !== host) return json(res, 403, { error: "Cross-origin requests are not allowed." }); }
     catch { return json(res, 403, { error: "Invalid request origin." }); }
   }
+  const expectedAccess = process.env.STUDIO_ACCESS_TOKEN;
+  const suppliedAccess = String(req.headers["x-studio-access"] || "");
+  if (!expectedAccess) return json(res, 503, { error: "Studio access is not configured. Add STUDIO_ACCESS_TOKEN in Vercel." });
+  const crypto = require("crypto");
+  const supplied = Buffer.from(suppliedAccess), expected = Buffer.from(expectedAccess);
+  if (supplied.length !== expected.length || !crypto.timingSafeEqual(supplied, expected)) return json(res, 401, { error: "Enter the correct studio access code." });
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return json(res, 503, { error: "Gemini is not configured yet. Add GEMINI_API_KEY in Vercel project environment variables." });
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
