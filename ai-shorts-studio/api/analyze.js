@@ -55,23 +55,32 @@ module.exports = async function handler(req, res) {
     "Hooks must be concise and specific. Captions should be short readable paraphrase beats, not fabricated verbatim quotes.",
     'If no good moments exist, return {"clips":[]}.'
   ].join("\n");
+  const models = [...new Set([MODEL, "gemini-3.7-flash", "gemini-3.5-flash-lite"])];
+  let lastCapacityError = "";
   try {
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
-      method: "POST",
-      headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: MODEL, input: [{ type: "video", uri: canonicalUrl }, { type: "text", text: prompt }] })
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      const detail = data.error && data.error.message ? data.error.message : "Gemini API request failed.";
-      return json(res, response.status === 429 ? 429 : 502, { error: detail });
+    for (const model of models) {
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+        method: "POST",
+        headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+        body: JSON.stringify({ model, input: [{ type: "video", uri: canonicalUrl }, { type: "text", text: prompt }] })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const detail = data.error && data.error.message ? data.error.message : "Gemini API request failed.";
+        if (response.status === 503) {
+          lastCapacityError = detail;
+          continue;
+        }
+        return json(res, response.status === 429 ? 429 : 502, { error: detail, model });
+      }
+      const result = parseModelJson(extractText(data));
+      const clips = (Array.isArray(result.clips) ? result.clips : []).filter(clip => {
+        const start = Number(clip.startSeconds), end = Number(clip.endSeconds);
+        return Number.isFinite(start) && Number.isFinite(end) && start >= 0 && end > start && end - start >= 30 && end - start <= 60;
+      }).slice(0, 5);
+      return json(res, 200, { clips, model });
     }
-    const result = parseModelJson(extractText(data));
-    const clips = (Array.isArray(result.clips) ? result.clips : []).filter(clip => {
-      const start = Number(clip.startSeconds), end = Number(clip.endSeconds);
-      return Number.isFinite(start) && Number.isFinite(end) && start >= 0 && end > start && end - start >= 30 && end - start <= 60;
-    }).slice(0, 5);
-    return json(res, 200, { clips, model: MODEL });
+    return json(res, 503, { error: "Gemini is temporarily overloaded across the available video models. Please try again later. " + lastCapacityError });
   } catch (error) {
     return json(res, 502, { error: error.message || "Could not analyze this video." });
   }
