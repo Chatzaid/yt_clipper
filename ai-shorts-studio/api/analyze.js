@@ -8,7 +8,7 @@ function json(res, status, body) {
 function extractText(payload) {
   if (typeof payload.output_text === "string") return payload.output_text;
   const parts = [];
-  for (const step of payload.steps || []) for (const part of step.content || []) if (part.type === "text" && part.text) parts.push(part.text);
+  for (const step of payload.steps || []) for (const part of step.content || []) if (part.text) parts.push(part.text);
   if (parts.length) return parts.join("\n");
   for (const item of payload.output || []) for (const part of item.content || []) if (part.text) parts.push(part.text);
   return parts.join("\n");
