@@ -383,7 +383,7 @@ export const Scene6CTA: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          bottom: 250,
+          bottom: 455,
           left: 82,
           right: 82,
           display: 'flex',
