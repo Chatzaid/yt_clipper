@@ -1,7 +1,13 @@
 # FixReach visual changelog
 
+## 2026-11-20 — hyper-local targeting scene retimed and clarified
+- Rebuilt Scene 3 as a three-beat sequence that follows the narration: local intent, the Varachha-to-Vesu cross-city travel example, then a clearly labelled 5 km core / 10 km outer service radius.
+- Replaced the ambiguous radar-only graphic with a schematic street map, explicit distance rings, a shop-centred target, and a disclaimer that the radius must be set from the actual shop location.
+- Timed the transitions to the existing caption cues so the cross-city route appears during the Varachha/Vesu line and the 5–10 km rings arrive with the radius explanation.
+- Validation: reviewed the scene source and frame timing against the existing 32.99–54.17 second scene window; no TypeScript build or render was run, and no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — word-level caption highlight repaired
-- Fixed the cue tokenizer to split on actual whitespace instead of the literal characters `\\s`, restoring per-word timing/highlight progression across Hindi captions.
+- Fixed the cue tokenizer to split on actual whitespace instead of the literal characters \\s, restoring per-word timing/highlight progression across Hindi captions.
 - Trimmed cue edges and filtered empty tokens so extra spaces cannot skew the active-word calculation.
 - Validation: inspected the committed source and exercised the whitespace split against representative Hindi caption text; no typecheck/render or GitHub Actions run was started.
 
