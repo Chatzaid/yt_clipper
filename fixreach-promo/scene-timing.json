@@ -1,0 +1,55 @@
+{
+  "fps": 30,
+  "duration_seconds": 97.32,
+  "total_frames": 2920,
+  "scenes": [
+    {
+      "scene": 1,
+      "duration_seconds": 14.016541666666667,
+      "start_frame": 0,
+      "end_frame_exclusive": 420,
+      "frames": 420,
+      "cumulative_audio_end_seconds": 14.016541666666667
+    },
+    {
+      "scene": 2,
+      "duration_seconds": 18.974333333333334,
+      "start_frame": 420,
+      "end_frame_exclusive": 990,
+      "frames": 570,
+      "cumulative_audio_end_seconds_seconds": 32.990875
+    },
+    {
+      "scene": 3,
+      "duration_seconds": 21.177791666666668,
+      "start_frame": 990,
+      "end_frame_exclusive": 1625,
+      "frames": 635,
+      "cumulative_audio_end_seconds": 54.16866666666667
+    },
+    {
+      "scene": 4,
+      "duration_seconds": 16.893291666666666,
+      "start_frame": 1625,
+      "end_frame_exclusive": 2132,
+      "frames": 507,
+      "cumulative_audio_end_seconds": 71.06195833333334
+    },
+    {
+      "scene": 5,
+      "duration_seconds": 14.07775,
+      "start_frame": 2132,
+      "end_frame_exclusive": 2554,
+      "frames": 422,
+      "cumulative_audio_end_seconds": 85.13970833333333
+    },
+    {
+      "scene": 6,
+      "duration_seconds": 12.180291666666667,
+      "start_frame": 2554,
+      "end_frame_exclusive": 2920,
+      "frames": 366,
+      "cumulative_audio_end_seconds": 97.32
+    }
+  ]
+}
