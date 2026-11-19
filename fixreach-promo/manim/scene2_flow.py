@@ -24,4 +24,4 @@ class Scene2Flow(Scene):
         ring=Circle(radius=.48,color=GREEN,stroke_width=5).move_to(call.get_center()).set_opacity(.65)
         self.play(FadeIn(group,shift=UP),Write(labels),run_time=3)
         self.play(ShowPassingFlash(ring.copy().scale(1.5),time_width=.6),Indicate(call,color=GREEN,scale_factor=1.12),run_time=1.2)
-        self.wait(9.8)
+        self.wait(9.77)
