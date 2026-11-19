@@ -1,5 +1,12 @@
 # FixReach visual changelog
 
+## 2026-11-20 — direct enquiry flow rebuilt as a repair dispatch board
+- Replaced the stacked generic WhatsApp/call cards with one customer request that branches into two real contact paths and reconverges at the shop's repair desk.
+- Animated the message/call routes into a single shop destination so the visual explains the direct path rather than merely claiming there is no middleman.
+- Delayed the no-price-race proof point until the matching narration beat, then revealed the exclusive-enquiry line near the end of the scene.
+- Kept the full diagram inside the central portrait safe area, leaving the bottom caption band clear.
+- Validation: source reviewed and fetched back after commit; no TypeScript build or render was run, and no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — hyper-local targeting scene retimed and clarified
 - Rebuilt Scene 3 as a three-beat sequence that follows the narration: local intent, the Varachha-to-Vesu cross-city travel example, then a clearly labelled 5 km core / 10 km outer service radius.
 - Replaced the ambiguous radar-only graphic with a schematic street map, explicit distance rings, a shop-centred target, and a disclaimer that the radius must be set from the actual shop location.
