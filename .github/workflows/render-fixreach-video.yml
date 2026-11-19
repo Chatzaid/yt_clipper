@@ -28,6 +28,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: feat/fixreach-promo-video
+      - name: Verify required media assets are present
+        run: |
+          required=(public/assets/logo.png public/audio/voiceover.wav public/audio/bgm.mp3 public/audio/subtitles.srt)
+          for i in 01 02 03 04 05 06; do required+=("public/audio/scenes/scene_${i}.wav"); done
+          for file in "${required[@]}"; do
+            if [[ ! -s "$file" ]]; then
+              echo "Missing required FixReach media: $file"
+              echo "Upload supplied media under fixreach-promo/public/... before rendering."
+              exit 1
+            fi
+          done
       - name: Install system dependencies (lightweight Cairo/Pango)
         run: |
           sudo apt-get update
@@ -55,7 +66,7 @@ jobs:
       - name: Verify base video
         run: |
           test -s out/base_visuals.mp4
-          ffprob -v error -show_entries stream=width,height,r_frame_rate -show_entries format=duration -o json out/base_visuals.mp4
+          ffprobe -v error -show_entries stream=width,height,r_frame_rate -show_entries format=duration -of json out/base_visuals.mp4
       - name: Publish base visuals to release
         uses: softprops/action-gh-release@v2
         with:
