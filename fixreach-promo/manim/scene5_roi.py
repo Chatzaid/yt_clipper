@@ -18,4 +18,4 @@ class Scene5ROI(Scene):
         lock=RoundedRectangle(width=3.2,height=.72,corner_radius=.15,color=GREEN,fill_color="#111827",fill_opacity=1).to_edge(DOWN)
         locktxt=Text("YOUR SERVICE RATE  100%",font_size=21,color=GREEN,weight=BOLD).move_to(lock)
         self.play(LaggedStart(*[GrowFromEdge(b,DOWN) for b in bars],lag_ratio=.12),FadeIn(chart_label),FadeIn(lock),Write(locktxt),run_time=3)
-        self.wait(9.08)
+        self.wait(9.0666666667)
