@@ -46,7 +46,7 @@ jobs:
           mkdir -p fixreach-promo/out/keyframes
           for spec in '01:210' '02:705' '03:1307' '04:1878' '05:2343' '06:2737'; do
             name="${spec%%:*}"; frame="${spec##*:}"
-            npx --prefix fixreach-promo remotion still fixreach-promo/src/index.ts FixReachPromo "fixreach-promo/out/keyframes/scene_${name}.png" --frame="${frame}" --image-format=png
+            npx remotion still src/index.ts FixReachPromo "out/keyframes/scene_${name}.png" --frame="${frame}" --image-format=png
           done
       - name: Verify render and keyframes
         working-directory: fixreach-promo
