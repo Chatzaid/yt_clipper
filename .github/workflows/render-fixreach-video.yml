@@ -39,6 +39,8 @@ jobs:
           node-version: '20'
       - name: Install Remotion dependencies
         run: npm install --no-audit --no-fund
+      - name: TypeScript preflight
+        run: npm run typecheck
       - name: Render Manim visuals
         run: python scripts/render_manim.py
       - name: Render 1080x1920 30fps base visuals
