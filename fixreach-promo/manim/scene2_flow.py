@@ -21,4 +21,4 @@ class Scene2Flow(Scene):
         group=VGroup(house,arrow,phone,screen,feed,call,calltxt).arrange(RIGHT,buff=.55).scale(.83)
         labels=Text("LOCAL REPAIR NEED → SOCIAL FEED → DIRECT CALL",font_size=26,color=WHITE,weight=BOLD).to_edge(DOWN)
         self.play(FadeIn(group,shift=UP),Write(labels),run_time=3)
-        self.wait(12)
+        self.wait(11)
