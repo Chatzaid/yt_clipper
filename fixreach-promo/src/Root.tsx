@@ -1,40 +1,9 @@
 import React from 'react';
-import {Composition, Sequence, OffthreadVideo, staticFile, AbsoluteFill, Audio} from 'remotion';
-import {Scene1Hook} from './scenes/Scene1Hook';
-import {Scene3Radar} from './scenes/Scene3Radar';
-import {Scene4Leads} from './scenes/Scene4Leads';
-import {Scene6CTA} from './scenes/Scene6CTA';
-
-const FRAMES = [420, 570, 635, 507, 422, 366];
-const STARTS = [0, 420, 990, 1625, 2132, 2554];
-const ManimClip: React.FC<{src: string}> = ({src}) => (
-  <AbsoluteFill style={{background:'#0B0F19'}}>
-    <OffthreadVideo src={staticFile(src)} style={{width:'100%',height:'100%',objectFit:'contain'}} />
-  </AbsoluteFill>
-);
-const Sfx: React.FC<{file:string; at:number; volume?:number}> = ({file,at,volume=0.16}) => (
-  <Sequence from={at}><Audio src={staticFile('sfx/'+file+'.wav')} volume={volume}/></Sequence>
-);
-const Base: React.FC = () => <>
-  <Sequence from={STARTS[0]} durationInFrames={FRAMES[0]}><Scene1Hook /></Sequence>
-  <Sequence from={STARTS[1]} durationInFrames={FRAMES[1]}><ManimClip src="manim/scene2_flow.mp4" /></Sequence>
-  <Sequence from={STARTS[2]} durationInFrames={FRAMES[2]}><Scene3Radar /></Sequence>
-  <Sequence from={STARTS[3]} durationInFrames={FRAMES[3]}><Scene4Leads /></Sequence>
-  <Sequence from={STARTS[4]} durationInFrames={FRAMES[4]}><ManimClip src="manim/scene5_roi.mp4" /></Sequence>
-  <Sequence from={STARTS[5]} durationInFrames={FRAMES[5]}><Scene6CTA /></Sequence>
-
-  {/* Transition whooshes */}
-  {[420,990,1625,2132,2554].map((at)=><Sfx key={'w'+at} file="whoosh" at={at}/>)}
-  {/* Lead card and technician arrival */}
-  <Sfx file="pop" at={48}/>
-  <Sfx file="pop" at={62}/>
-  {/* Price comparison and route-loss warnings */}
-  <Sfx file="alert" at={420}/>
-  <Sfx file="alert" at={1010}/>
-  {/* ROI equation and notification / CTA confirmations */}
-  <Sfx file="pop" at={2138}/>
-  <Sfx file="ding" at={1625+18}/>
-  <Sfx file="ding" at={1625+108}/>
-  <Sfx file="ding" at={2554+120}/>
-</>;
-export const RemotionRoot: React.FC = () => <Composition id="FixReachPromo" component={Base} durationInFrames={2920} fps={30} width={1080} height={1920} />;
+import {Composition,Sequence,staticFile,Audio,useCurrentFrame,interpolate,spring,useVideoConfig} from 'remotion';
+import {CaptionOverlay} from './components/CaptionOverlay';
+import {Scene1Hook} from './scenes/Scene1Hook';import {Scene2Flow} from './scenes/Scene2Flow';import {Scene3Radar} from './scenes/Scene3Radar';import {Scene4Leads} from './scenes/Scene4Leads';import {Scene5ROI} from './scenes/Scene5ROI';import {Scene6CTA} from './scenes/Scene6CTA';
+const FRAMES=[420,570,635,507,422,366],STARTS=[0,420,990,1625,2132,2554],CHAPTERS=['01 • SHARED LEAD RACE','02 • PRICE COMPARISON','03 • SURAT 5–10 KM TARGETING','04 • 100% EXCLUSIVE LEADS','05 • SIMPLE ROI MATH','06 • GET STARTED'];
+const Chapters:React.FC=()=>{const f=useCurrentFrame();const {fps}=useVideoConfig();const i=STARTS.reduce((a,s,n)=>f>=s?n:a,0);const p=spring({frame:f-STARTS[i]-4,fps,config:{damping:15,stiffness:110}});return <div style={{position:'absolute',inset:0,pointerEvents:'none'}}><div style={{position:'absolute',top:0,left:0,right:0,height:6,background:'#253044'}}><div style={{height:6,width:(f/2920*100)+'%',background:'#F97316',boxShadow:'0 0 18px #F97316'}}/></div><div style={{position:'absolute',top:70,left:'50%',transform:'translateX(-50%) scale('+p+')',padding:'13px 25px',borderRadius:26,border:'1px solid #F9731666',background:'#0B0F19E8',color:'#FDBA74',fontSize:22,fontWeight:900,whiteSpace:'nowrap'}}>{CHAPTERS[i]}</div></div>};
+const Sfx:React.FC<{file:string;at:number;volume?:number}>=({file,at,volume=.16})=><Sequence from={at}><Audio src={staticFile('sfx/'+file+'.wav')} volume={volume}/></Sequence>;
+const Base:React.FC=()=>{const scenes=[<Scene1Hook/>,<Scene2Flow/>,<Scene3Radar/>,<Scene4Leads/>,<Scene5ROI/>,<Scene6CTA/>];return <>{scenes.map((s,i)=><Sequence key={i} from={STARTS[i]} durationInFrames={FRAMES[i]}><div style={{width:'100%',height:'100%',transform:'scale('+interpolate(useCurrentFrame(),[0,FRAMES[i]],[1,1.04],{extrapolateRight:'clamp'})+')'}}>{s}</div></Sequence>)}<Chapters/><CaptionOverlay/>{[420,990,1625,2132,2554].map(a=><Sfx key={'w'+a} file="whoosh" at={a}/>)}{[48,62,438,1010,1643,1733,2138,2674].map((a,i)=><Sfx key={'s'+a} file={i===2||i===3?'alert':i===4||i===5||i===7?'ding':'pop'} at={a}/>)}</>};
+export const RemotionRoot:React.FC=()=> <Composition id="FixReachPromo" component={Base} durationInFrames={2920} fps={30} width={1080} height={1920}/>;

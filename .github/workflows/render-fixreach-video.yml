@@ -1,4 +1,4 @@
-name: Render FixReach Promo
+name: Render FixReach Promo v3
 on:
   push:
     branches: [feat/fixreach-promo-video]
@@ -14,54 +14,57 @@ concurrency:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-    defaults:
-      run:
-        working-directory: fixreach-promo
+    timeout-minutes: 45
     steps:
-      - name: Checkout feature branch only
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: feat/fixreach-promo-video
-      - name: Install lightweight system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg libcairo2-dev libpango1.0-dev pkg-config python3-dev build-essential
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install Manim without TeX distribution
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install 'manim==0.19.0'
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: fixreach-promo/package.json
+      - name: Prepare render directories
+        run: mkdir -p fixreach-promo/out fixreach-promo/public/sfx fixreach-promo/public/assets
       - name: Install Remotion dependencies
+        working-directory: fixreach-promo
         run: npm install --no-audit --no-fund
       - name: TypeScript preflight
+        working-directory: fixreach-promo
         run: npm run typecheck
-      - name: Render Manim visuals
-        run: python scripts/render_manim.py
       - name: Generate original UI sound effects
-        run: |
-          python -m pip install numpy scipy
-          python scripts/generate_sfx.py
-      - name: Render 1080x1920 30fps base visuals
+        working-directory: fixreach-promo
+        run: node scripts/generate-sfx.js
+      - name: Render visual master
+        working-directory: fixreach-promo
         run: npm run build
-      - name: Verify base video
+      - name: Export six scene midpoint stills
+        working-directory: fixreach-promo
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p fixreach-promo/out/keyframes
+          for spec in '01:210' '02:705' '03:1307' '04:1878' '05:2343' '06:2737'; do
+            name="${spec%%:*}"; frame="${spec##*:}"
+            npx --prefix fixreach-promo remotion still fixreach-promo/src/index.ts FixReachPromo "fixreach-promo/out/keyframes/scene_${name}.png" --frame="${frame}" --image-format=png
+          done
+      - name: Verify render and keyframes
+        working-directory: fixreach-promo
         run: |
           test -s out/base_visuals.mp4
+          test "$(find out/keyframes -maxdepth 1 -name 'scene_*.png' | wc -l)" -eq 6
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -show_entries format=duration -of json out/base_visuals.mp4
-      - name: Publish base visuals to GitHub Release
+      - name: Publish v3 master and keyframes
         uses: softprops/action-gh-release@v2
         with:
           tag_name: fixreach-v1-render
-          name: FixReach v1 Base Visual Render
+          name: FixReach v3 Visual Master
           body: |
-            Visual-only 1080x1920 30fps base render.
-            Voiceover, music, and subtitles are intentionally processed separately.
-          files: fixreach-promo/out/base_visuals.mp4
+            Visual-only master 1080x1920 at 30fps, plus six scene midpoint PNGs.
+            Voiceover, music and subtitles are mixed separately.
+          files: |
+            fixreach-promo/out/base_visuals.mp4
+            fixreach-promo/out/keyframes/*.png
           fail_on_unmatched_files: true
           overwrite_files: true
         env:
