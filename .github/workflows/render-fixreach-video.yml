@@ -1,80 +1,60 @@
 name: Render FixReach Promo
-
 on:
   push:
-    branches:
-      - feat/fixreach-promo-video
+    branches: [feat/fixreach-promo-video]
     paths:
       - 'fixreach-promo/**'
       - '.github/workflows/render-fixreach-video.yml'
   workflow_dispatch:
-
 permissions:
   contents: write
-
 concurrency:
   group: fixreach-promo-render
   cancel-in-progress: false
-
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: fixreach-promo
     steps:
-      - name: Checkout feature branch
+      - name: Checkout feature branch only
         uses: actions/checkout@v4
         with:
           ref: feat/fixreach-promo-video
-      - name: Verify required media assets are present
-        run: |
-          required=(public/assets/logo.png public/audio/voiceover.wav public/audio/bgm.mp3 public/audio/subtitles.srt)
-          for i in 01 02 03 04 05 06; do required+=("public/audio/scenes/scene_${i}.wav"); done
-          for file in "${required[@]}"; do
-            if [[ ! -s "$file" ]]; then
-              echo "Missing required FixReach media: $file"
-              echo "Upload supplied media under fixreach-promo/public/... before rendering."
-              exit 1
-            fi
-          done
-      - name: Install system dependencies (lightweight Cairo/Pango)
+      - name: Install lightweight system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ffmpeg libcairo2-dev libpango1.0-dev pkg-config python3-dev build-essential
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install Manim (no TeX distribution)
+      - name: Install Manim without TeX distribution
         run: |
           python -m pip install --upgrade pip
           python -m pip install 'manim==0.19.0'
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Install Remotion dependencies
         run: npm install --no-audit --no-fund
-      - name: Calculate exact scene timing
-        run: python scripts/timing.py
-      - name: Render Manim scenes
+      - name: Render Manim visuals
         run: python scripts/render_manim.py
-      - name: Render Remotion base visuals
+      - name: Render 1080x1920 30fps base visuals
         run: npm run build
       - name: Verify base video
         run: |
           test -s out/base_visuals.mp4
-          ffprobe -v error -show_entries stream=width,height,r_frame_rate -show_entries format=duration -of json out/base_visuals.mp4
-      - name: Publish base visuals to release
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -show_entries format=duration -of json out/base_visuals.mp4
+      - name: Publish base visuals to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: fixreach-v1-render
           name: FixReach v1 Base Visual Render
           body: |
-            Automated 1080x1920 30fps base visuals for the FixReach promo.
-            Generated from branch feat/fixreach-promo-video.
+            Visual-only 1080x1920 30fps base render.
+            Voiceover, music, and subtitles are intentionally processed separately.
           files: fixreach-promo/out/base_visuals.mp4
           fail_on_unmatched_files: true
           overwrite_files: true
