@@ -2,4 +2,7 @@
   "name":"fixreach-promo-render",
   "version":"1.0.0",
   "private":true,
-  "scripts":{"build":"remotion render src/index.ts FixReachPromo out/base_visuals.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p"},"dependencies":{"@remotion/cli":"4.0.322","@remotion/google-fonts":"4.0.322","react":"18.3.1","react-dom":"18.3.1","remotion":"4.0.322"},"devDependencies":{"typescript":"5.7.3"}}
+  "scripts":{"build":"remotion render src/index.ts FixReachPromo out/base_visuals.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p"},
+  "dependencies":{"@remotion/cli":"4.0.322","react":"18.3.1","react-dom":"18.3.1","remotion":"4.0.322"},
+  "devDependencies":{"typescript":"5.7.3"}
+}
