@@ -43,6 +43,10 @@ jobs:
         run: npm run typecheck
       - name: Render Manim visuals
         run: python scripts/render_manim.py
+      - name: Generate original UI sound effects
+        run: |
+          python -m pip install numpy scipy
+          python scripts/generate_sfx.py
       - name: Render 1080x1920 30fps base visuals
         run: npm run build
       - name: Verify base video
