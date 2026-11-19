@@ -1,4 +1,5 @@
 from manim import *
+import numpy as np
 BG="#0B0F19"; ORANGE="#F97316"; GREEN="#10B981"; RED="#EF4444"; CARD="#111827"; WHITE="#F9FAFB"
 class Scene2Flow(Scene):
     def construct(self):
@@ -18,7 +19,9 @@ class Scene2Flow(Scene):
         call=RoundedRectangle(width=1.5,height=.48,corner_radius=.12,color=GREEN,fill_color=GREEN,fill_opacity=1).next_to(screen,DOWN,buff=.14)
         calltxt=Text("CALL NOW",font_size=17,color=BG,weight=BOLD).move_to(call)
         arrow=Arrow(RIGHT*1.6,RIGHT*3,color=GREEN,stroke_width=8)
-        group=VGroup(house,arrow,phone,screen,feed,call,calltxt).arrange(RIGHT,buff=.55).scale(.83)
-        labels=Text("LOCAL REPAIR NEED → SOCIAL FEED → DIRECT CALL",font_size=26,color=WHITE,weight=BOLD).to_edge(DOWN)
+        group=VGroup(house,arrow,phone,screen,feed,call,calltxt).arrange(RIGHT,buff=.55).scale(1.22).move_to(UP*.15)
+        labels=Text("LOCAL REPAIR NEED → SOCIAL FEED → DIRECT CALL",font_size=26,color=WHITE,weight=BOLD).scale_to_fit_width(11.5).to_edge(DOWN)
+        ring=Circle(radius=.48,color=GREEN,stroke_width=5).move_to(call.get_center()).set_opacity(.65)
         self.play(FadeIn(group,shift=UP),Write(labels),run_time=3)
-        self.wait(11)
+        self.play(ShowPassingFlash(ring.copy().scale(1.5),time_width=.6),Indicate(call,color=GREEN,scale_factor=1.12),run_time=1.2)
+        self.wait(9.8)
