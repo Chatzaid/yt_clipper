@@ -1,5 +1,10 @@
 # FixReach visual changelog
 
+## 2026-11-20 — word-level caption highlight repaired
+- Fixed the cue tokenizer to split on actual whitespace instead of the literal characters `\\s`, restoring per-word timing/highlight progression across Hindi captions.
+- Trimmed cue edges and filtered empty tokens so extra spaces cannot skew the active-word calculation.
+- Validation: inspected the committed source and exercised the whitespace split against representative Hindi caption text; no typecheck/render or GitHub Actions run was started.
+
 ## 2026-11-20 — ROI scene rebuilt as a repair-margin comparison
 - Replaced the unlabeled rising-bar graphic with a service work-order visual connected to three daily ad-spend tiles, matching the voiceover's one-repair-versus-multiple-days explanation.
 - Added an explicit illustrative-only label and a note that actual repair margins and ad costs vary; the scene does not invent rupee values or guaranteed returns.
