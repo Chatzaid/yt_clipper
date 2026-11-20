@@ -1,3 +1,9 @@
+## 2026-11-20 — Mount the bespoke repair-economics scene in the final composition
+- Root was mounting the sparse Manim ROI placeholder even though the richer `Scene5ROI` work-order composition already existed; the result left the core one-repair-versus-multi-day-ad-spend explanation visually empty.
+- Mounted `Scene5ROI` directly in chapter 05: completed-repair contribution margin, three illustrative campaign-day tiles, and a variable-cost qualifier now appear in the central safe area.
+- Preserved the 422-frame chapter window, chapter label, 20-beat rail, subtitle reserve, voiceover timing, and SFX pipeline.
+- Validation: checked the component export/content, Root import and single mount, and unchanged six-scene frame schedule. Commit uses `[skip ci]`; no GitHub Actions workflow was started.
+
 ## 2026-11-20 — Make the five-second story rail readable at every transition
 - Removed the overlapping crossfade of two complete text cards. It caused duplicate/ghosted headlines during each 12-frame overlap.
 - The rail now renders exactly one beat at a time, with a short 8-frame entrance; the outgoing card is replaced at the five-second boundary instead of stacking over its successor.
