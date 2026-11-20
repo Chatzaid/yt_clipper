@@ -57,6 +57,7 @@ def main() -> None:
     parser.add_argument('--bgm', default=str(ROOT / 'public' / 'audio' / 'bgm.mp3'))
     parser.add_argument('--sfx', default=str(ROOT / 'out' / 'sfx.wav'), help='Synced UI SFX stem from Stage 1')
     parser.add_argument('--srt', default=str(ROOT / 'public' / 'audio' / 'subtitles.srt'))
+    parser.add_argument('--captions-already-burned', action='store_true', help='Keep existing burned captions; still validate the SRT timeline')
     parser.add_argument('--bgm-gain', type=float, default=0.16)
     parser.add_argument('--sfx-gain', type=float, default=0.9)
     args = parser.parse_args()
@@ -113,19 +114,22 @@ def main() -> None:
             '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2',
             '-t', f'{total:.6f}', '-movflags', '+faststart', str(mixed),
         ])
-        # The SRT filter's default ASS canvas is 384x288; keep these values small
-        # so captions land at about 40px and around 170px above the bottom on 1080x1920.
-        subtitle_style = (
-            'FontName=DejaVu Sans,FontSize=6,Bold=1,PrimaryColour=&H00FFFFFF,'
-            'OutlineColour=&H00101827,BorderStyle=1,Outline=1,Shadow=0.5,Alignment=2,'
-            'MarginV=26,MarginL=30,MarginR=30'
-        )
-        subtitle_filter = f"subtitles='{escape_filter_path(srt)}':force_style='{subtitle_style}'"
-        run([
-            'ffmpeg', '-y', '-hide_banner', '-loglevel', 'warning', '-i', str(mixed),
-            '-vf', subtitle_filter, '-c:v', 'libx264', '-preset', 'medium', '-crf', '18',
-            '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', str(out),
-        ])
+        if args.captions_already_burned:
+            mixed.replace(out)
+        else:
+            # The SRT filter's default ASS canvas is 384x288; keep these values small
+            # so captions land at about 40px and around 170px above the bottom on 1080x1920.
+            subtitle_style = (
+                'FontName=DejaVu Sans,FontSize=6,Bold=1,PrimaryColour=&H00FFFFFF,'
+                'OutlineColour=&H00101827,BorderStyle=1,Outline=1,Shadow=0.5,Alignment=2,'
+                'MarginV=26,MarginL=30,MarginR=30'
+            )
+            subtitle_filter = f"subtitles='{escape_filter_path(srt)}':force_style='{subtitle_style}'"
+            run([
+                'ffmpeg', '-y', '-hide_banner', '-loglevel', 'warning', '-i', str(mixed),
+                '-vf', subtitle_filter, '-c:v', 'libx264', '-preset', 'medium', '-crf', '18',
+                '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', str(out),
+            ])
     finally:
         mixed.unlink(missing_ok=True)
 
