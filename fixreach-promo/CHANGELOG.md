@@ -2,8 +2,8 @@
 - Replaced the generic customer quote card with a repair-shop message slip and a visible ₹200 undercut stamp, making the margin-pressure beat read as a real customer interaction.
 - Re-timed the quote to enter with the spoken bargaining line and clear before the social-feed visual begins; the old version showed the quote too early and let it overlap the ad-feed handoff.
 - Staged the Surat repair-shop tile, connector route, sponsored local ad, and direct-call CTA so each appears in the order described by the narration.
-- Kept the composition centred in the portrait safe area with the lower caption band unobstructed.
-- Validation: checked scene-local frame windows against Root.tsx's 420-frame scene start and the existing 15.65–34.65 second caption cues; source read-back pending. No TypeScript build or Remotion render was run, and no GitHub Actions workflow was triggered.
+- Kept the composition centred in the portrait safe area; raised the final sequence label to 430 px above the bottom edge so it clears the lower subtitle band.
+- Validation: checked scene-local frame windows against Root.tsx's 420-frame scene start and the existing 15.65–34.65 second caption cues; fetched the updated source back from GitHub. No TypeScript build or Remotion render was run, and no GitHub Actions workflow was triggered.
 
 ## 2026-11-20 — shared-lead dispatch routes staggered by technician
 - Changed the five orange branches from a simultaneous draw into a left-to-right dispatch sequence, with each technician card beginning its reveal as its route reaches the endpoint.
