@@ -72,3 +72,9 @@
 - Kept the close aligned with the existing voiceover: link in bio, more local enquiries, and protecting the shop's service rate.
 - Kept the primary card and the small footer above the subtitle safe zone; no important CTA copy sits behind captions.
 - Validation note: source reviewed statically; a render/typecheck was intentionally not run in this automation pass to avoid starting GitHub Actions.
+
+
+## 2026-11-20 — Scene 4 proof rail lifted into the caption-safe lane
+- Raised the complete direct-enquiry stack by 120 px by increasing bottom reserve, keeping the WhatsApp/call/shop flow and proof rail clear of the lower subtitle band.
+- Delayed the `ONE ENQUIRY. YOUR SHOP.` reveal to scene-local frame 450 (69.15 s on the full film), matching the start of the corresponding spoken caption instead of appearing early.
+- Validation: checked the source anchors and frame-time arithmetic against Scene 4's 54.17 s start; local QA v9 separately masks the older baked-in proof rail and removes a stray diagonal orange render artifact from the available v8 candidate. No TypeScript build or GitHub Actions workflow was run.
