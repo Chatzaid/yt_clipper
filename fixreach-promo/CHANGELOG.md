@@ -1,3 +1,9 @@
+## 2026-11-20 — ROI and CTA compositions moved clear of the caption band
+- Shifted the Scene 5 repair-economics composition upward so the three ad-spend tiles and illustrative qualifier no longer compete with the lower subtitle region.
+- Compressed Scene 6's service work-order card to end above the caption-safe band, shortened the proof rows and CTA slightly, and removed the redundant low footer that sat behind captions.
+- Kept the repair-work-order visual language, proof-point order, CTA wording, and all scene timing/audio cues unchanged.
+- Validation: checked the source geometry against the 1080×1920 caption-safe region (content now ends above y=1220); no TypeScript build or Remotion render was run, and no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — Scene 2 price-race and social-feed reveal retimed
 - Replaced the generic customer quote card with a repair-shop message slip and a visible ₹200 undercut stamp, making the margin-pressure beat read as a real customer interaction.
 - Re-timed the quote to enter with the spoken bargaining line and clear before the social-feed visual begins; the old version showed the quote too early and let it overlap the ad-feed handoff.
