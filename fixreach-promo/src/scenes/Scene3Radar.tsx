@@ -68,8 +68,8 @@ export const Scene3Radar: React.FC = () => {
           </svg>
           <div style={{position: 'absolute', left: 88, top: 175}}><MapPin label="VARACHHA" color="#F87171" /></div>
           <div style={{position: 'absolute', right: 70, bottom: 155}}><MapPin label="VESU" color="#F87171" /></div>
-          <div style={{position: 'absolute', left: '50%', bottom: 38, transform: 'translateX(-50%)', background: '#3B1118', border: '2px solid #EF4444', borderRadius: 18, padding: '15px 24px', color: '#FECACA', fontSize: 23, fontWeight: 900, whiteSpace: 'nowrap'}}>
-            FUEL + TIME LOST
+          <div style={{position: 'absolute', left: '50%', bottom: 118, transform: 'translateX(-50%)', background: '#3B1118', border: '2px solid #EF4444', borderRadius: 18, padding: '15px 24px', color: '#FECACA', fontSize: 23, fontWeight: 900, whiteSpace: 'nowrap'}}>
+            PETROL + TIME LOSS
           </div>
         </div>
 

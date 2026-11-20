@@ -95,3 +95,11 @@
 - Raised the complete direct-enquiry stack by 120 px by increasing bottom reserve, keeping the WhatsApp/call/shop flow and proof rail clear of the lower subtitle band.
 - Delayed the `ONE ENQUIRY. YOUR SHOP.` reveal to scene-local frame 450 (69.15 s on the full film), matching the start of the corresponding spoken caption instead of appearing early.
 - Validation: checked the source anchors and frame-time arithmetic against Scene 4's 54.17 s start; local QA v9 separately masks the older baked-in proof rail and removes a stray diagonal orange render artifact from the available v8 candidate. No TypeScript build or GitHub Actions workflow was run.
+
+## 2026-11-20 — Stage 1 pipeline rebuilt
+- Actions installs Python 3.11, Manim 0.19, NumPy/SciPy, FFmpeg, Cairo and Pango; renders Manim before Remotion.
+- Python generates six original SFX types; a frame-accurate 48kHz SFX-only WAV is assembled separately.
+- Remotion no longer mounts CaptionOverlay or audio; silent visuals.mp4 reserves y=78%–84% for Stage 2 captions.
+- Six scenes compressed to 250/340/378/302/251/219 frames (58 seconds); SFX events re-anchored.
+- Manim Scene 02 keeps Hinglish ₹200 line; Scene 05 is a clean green chart. Scene 03/04 moved up for safe-zone clearance; Scene 06 is centered FixReach + green CTA + trial badge.
+- Strict output verification and artifact upload added. No VO, BGM or subtitles added.

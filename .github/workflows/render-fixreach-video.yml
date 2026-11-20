@@ -1,20 +1,18 @@
-name: Render FixReach Promo v3
+name: FixReach Stage 1 — visuals + Python SFX
 on:
   push:
     branches: [feat/fixreach-promo-video]
-    paths:
-      - 'fixreach-promo/**'
-      - '.github/workflows/render-fixreach-video.yml'
+    paths: ['fixreach-promo/**', '.github/workflows/render-fixreach-video.yml']
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
-  group: fixreach-promo-render
+  group: fixreach-stage1-render
   cancel-in-progress: false
 jobs:
-  render:
+  render-stage-1:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,52 +20,66 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm
-          cache-dependency-path: fixreach-promo/package.json
-      - name: Install media verification tools
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
-      - name: Prepare render directories
-        run: mkdir -p fixreach-promo/out fixreach-promo/public/sfx fixreach-promo/public/assets
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install native render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libcairo2-dev libpango1.0-dev pkg-config python3-dev
+      - name: Install Manim and Python SFX dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "manim==0.19.0" "numpy<2.3" "scipy==1.15.3"
+      - name: Render Manim scene assets
+        working-directory: fixreach-promo
+        run: python scripts/render_manim.py
+      - name: Generate original Python SFX
+        working-directory: fixreach-promo
+        run: python scripts/generate_sfx.py
       - name: Install Remotion dependencies
         working-directory: fixreach-promo
         run: npm install --no-audit --no-fund
       - name: TypeScript preflight
         working-directory: fixreach-promo
         run: npm run typecheck
-      - name: Generate original UI sound effects
+      - name: Render silent 1080x1920 visual master
         working-directory: fixreach-promo
-        run: node scripts/generate-sfx.js
-      - name: Render visual master
+        run: npm run build && mv out/base_visuals.mp4 out/visuals.mp4
+      - name: Assemble synced SFX WAV (no VO or BGM)
         working-directory: fixreach-promo
-        run: npm run build
+        run: python scripts/mix_sfx.py
       - name: Export six scene midpoint stills
         working-directory: fixreach-promo
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p fixreach-promo/out/keyframes
-          for spec in '01:210' '02:705' '03:1307' '04:1878' '05:2343' '06:2737'; do
+          mkdir -p out/keyframes
+          for spec in '01:125' '02:420' '03:779' '04:1119' '05:1395' '06:1630'; do
             name="${spec%%:*}"; frame="${spec##*:}"
             npx remotion still src/index.ts FixReachPromo "out/keyframes/scene_${name}.png" --frame="${frame}" --image-format=png
           done
-      - name: Verify render and keyframes
+      - name: Verify Stage 1 deliverables
         working-directory: fixreach-promo
+        shell: bash
         run: |
-          test -s out/base_visuals.mp4
+          set -euo pipefail
+          test -s out/visuals.mp4 && test -s out/sfx.wav
           test "$(find out/keyframes -maxdepth 1 -name 'scene_*.png' | wc -l)" -eq 6
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -show_entries format=duration -of json out/base_visuals.mp4
-      - name: Publish v3 master and keyframes
-        uses: softprops/action-gh-release@v2
+          ffprobe -v error -show_streams -show_format -of json out/visuals.mp4 > out/visuals_probe.json
+          ffprobe -v error -show_streams -show_format -of json out/sfx.wav > out/sfx_probe.json
+          python scripts/verify_stage1.py
+          ffmpeg -v error -i out/visuals.mp4 -f null -
+      - name: Upload Stage 1 review bundle
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: fixreach-v1-render
-          name: FixReach v3 Visual Master
-          body: |
-            Visual-only master 1080x1920 at 30fps, plus six scene midpoint PNGs.
-            Voiceover, music and subtitles are mixed separately.
-          files: |
-            fixreach-promo/out/base_visuals.mp4
+          name: fixreach-stage1-visuals-sfx
+          path: |
+            fixreach-promo/out/visuals.mp4
+            fixreach-promo/out/sfx.wav
             fixreach-promo/out/keyframes/*.png
-          fail_on_unmatched_files: true
-          overwrite_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            fixreach-promo/out/*_probe.json
+            fixreach-promo/public/manim/*.mp4
+          if-no-files-found: error
+          retention-days: 14

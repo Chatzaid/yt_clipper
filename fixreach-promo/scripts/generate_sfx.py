@@ -51,4 +51,9 @@ pulse_env = np.exp(-t * 12) * ((np.sin(2*np.pi*8*t) > 0).astype(float))
 alert = (np.sin(2*np.pi*115*t) + .25*np.sin(2*np.pi*172*t)) * pulse_env
 save("alert.wav", alert)
 
-print("Generated whoosh.wav, pop.wav, ding.wav, alert.wav in", OUT)
+
+dur=.22; n=int(SR*dur); t=np.arange(n)/SR
+save("ping.wav",(np.sin(2*np.pi*1046.5*t)+.55*np.sin(2*np.pi*1318.5*t))*np.exp(-t*19)*np.minimum(1,t/.006))
+dur=.32; n=int(SR*dur); t=np.arange(n)/SR
+save("hit.wav",.72*np.sin(2*np.pi*(92-24*t/dur)*t)*np.exp(-t*20)+.28*np.sin(2*np.pi*1850*t)*np.exp(-t*34))
+print("Generated whoosh, pop, ding, alert, ping and hit WAVs in", OUT)
