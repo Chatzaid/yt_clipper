@@ -1,3 +1,10 @@
+## 2026-11-20 — Restore the full price-race → social-feed → direct-call composition
+- Replaced the sparse Manim placeholder in the Scene 2 mount with the existing timed React scene, so the central story now carries a repair-shop quote slip, the spoken ₹200 undercut, a scrolling-feed bridge, the sponsored local repair ad, and the direct-call CTA.
+- Kept the 570-frame chapter window and existing narration-aligned reveals: quote at 19.3s, feed bridge at 22.4s, sponsored ad at 28.5s, and call CTA at 31.05s.
+- The central composition occupies approximately y=698–1298; the 20-beat information rail remains at y=1315–1469 and the caption reserve remains y=1498–1613, so the layers do not collide.
+- This is a composition integration, not a cosmetic reskin. Scene 2's Manim asset remains generated for traceability but is no longer mounted in the final composition.
+- Validation: confirmed the Scene2Flow component exists, is exported, uses the 570-frame local clock, and its reveal windows align with the SRT. No GitHub Actions workflow was triggered; the local master uses a matching scene treatment and is verified separately.
+
 ## 2026-11-20 — Added a 20-beat narration-driven visual overlay
 - Added 20 distinct visual information beats across the full 97.32s narration, starting at 5-second intervals and mapped to the supplied Hindi voiceover/SRT story progression.
 - Each beat uses a consistent FixReach field-dispatch HUD treatment with its own diagram motif, headline, supporting line, and amber/green/red signal colour.
