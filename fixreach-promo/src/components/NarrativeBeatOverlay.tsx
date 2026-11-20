@@ -18,19 +18,19 @@ const BEATS: Beat[] = [
   {title:'₹200 UNDERCUT',detail:'Same repair. Lower quote. Less margin.',visual:'price',accent:'#EF4444'},
   {title:'THE SHOP BOARD IS NOT ENOUGH',detail:'Customers are already scrolling on their phones',visual:'store',accent:'#F97316'},
   {title:'INSTAGRAM + FACEBOOK',detail:'A local repair ad appears inside the feed',visual:'social',accent:'#A78BFA'},
-  {title:'GET SEEN BEFORE THE CALL',detail:'The right video turns attention into an enquiry',visual:'ad',accent:'#10B981'},
-  {title:'HYPER-LOCAL TARGETING',detail:'Reach nearby people who may need a repair',visual:'target',accent:'#10B981'},
-  {title:'NOT THE WHOLE OF SURAT',detail:'Broad reach can create irrelevant travel',visual:'city',accent:'#F97316'},
-  {title:'VARACHHA → VESU',detail:'A small enquiry can cost petrol and time',visual:'route',accent:'#EF4444'},
+  {title:'HYPER-LOCAL TARGETING',detail:'Smart technicians focus on nearby repair demand',visual:'target',accent:'#10B981'},
+  {title:'NOT THE WHOLE OF SURAT',detail:'Do not pay to reach people outside your service area',visual:'city',accent:'#F97316'},
+  {title:'VARACHHA → VESU',detail:'One distant enquiry can burn fuel and technician time',visual:'route',accent:'#EF4444'},
   {title:'A 5–10 KM SERVICE ZONE',detail:'Focus the campaign around your actual shop',visual:'radius',accent:'#10B981'},
-  {title:'NO LEAD MIDDLEMAN',detail:'The customer reaches your business directly',visual:'bridge',accent:'#10B981'},
-  {title:'WHATSAPP MESSAGE',detail:'A customer can message your shop directly',visual:'chat',accent:'#10B981'},
-  {title:'OR A DIRECT PHONE CALL',detail:'Two clear paths. One repair desk.',visual:'phone',accent:'#10B981'},
-  {title:'NO FIVE-WAY PRICE RACE',detail:'The enquiry is not being passed around a lead pool',visual:'lock',accent:'#10B981'},
-  {title:'ONE COMPLETED REPAIR',detail:'Think in contribution margin—not just turnover',visual:'margin',accent:'#10B981'},
-  {title:'CAN OFFSET DAYS OF ADS',detail:'Illustrative comparison; actual costs vary',visual:'bars',accent:'#10B981'},
-  {title:'PROTECT YOUR SERVICE RATE',detail:'Build a steadier enquiry flow without racing to the bottom',visual:'shield',accent:'#10B981'},
-  {title:'SEE THE SYSTEM',detail:'Open the link in bio • explore the next step',visual:'link',accent:'#F97316'},
+  {title:'NO LEAD MIDDLEMAN',detail:'The customer reaches your shop directly',visual:'bridge',accent:'#10B981'},
+  {title:'WHATSAPP OR DIRECT CALL',detail:'Two direct ways to contact your repair desk',visual:'chat',accent:'#10B981'},
+  {title:'NO FIVE-WAY BARGAINING',detail:'No shared pool of technicians quoting against each other',visual:'phone',accent:'#10B981'},
+  {title:'EVERY ENQUIRY IS EXCLUSIVE',detail:'The enquiry belongs to your business—not a lead pool',visual:'lock',accent:'#10B981'},
+  {title:'SIMPLE REPAIR MATH',detail:'Start with the margin left after one completed repair',visual:'margin',accent:'#10B981'},
+  {title:'ONE REPAIR CAN OFFSET AD SPEND',detail:'Protect your service rate instead of racing to the bottom',visual:'bars',accent:'#10B981'},
+  {title:'WANT TO SEE THE SYSTEM?',detail:'The next step is to understand the local enquiry flow',visual:'shield',accent:'#10B981'},
+  {title:'LINK IN BIO',detail:'Tap the link and explore how the system works',visual:'link',accent:'#F97316'},
+  {title:'TAP TO EXPLORE',detail:'FixReach • local repair enquiries, direct to your shop',visual:'link',accent:'#F97316'},
 ];
 
 const BeatGlyph: React.FC<{kind: Beat['visual']; accent: string}> = ({kind, accent}) => {
@@ -81,9 +81,11 @@ export const NarrativeBeatOverlay: React.FC = () => {
       {BEATS.map((beat,index) => {
         const start = index * beatFrames;
         const end = Math.min((index + 1) * beatFrames, 2920);
-        if (frame < start - fadeFrames || frame > end + fadeFrames) return null;
-        const fadeIn = interpolate(frame,[start,start+fadeFrames],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
-        const fadeOut = interpolate(frame,[end-fadeFrames,end],[1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
+        if (frame < (index === 0 ? start : start - fadeFrames) || frame > (index === BEATS.length - 1 ? end : end + fadeFrames)) return null;
+        const fadeInStart = index === 0 ? start : start - fadeFrames;
+        const fadeOutEnd = index === BEATS.length - 1 ? end : end + fadeFrames;
+        const fadeIn = interpolate(frame,[fadeInStart,start+fadeFrames],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
+        const fadeOut = interpolate(frame,[end-fadeFrames,fadeOutEnd],[1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
         const opacity = Math.min(fadeIn,fadeOut);
         if (opacity <= 0) return null;
         return (

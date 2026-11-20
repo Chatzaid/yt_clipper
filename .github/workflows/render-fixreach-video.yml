@@ -53,15 +53,17 @@ jobs:
       - name: Assemble synced SFX WAV (no VO or BGM)
         working-directory: fixreach-promo
         run: python scripts/mix_sfx.py
-      - name: Export six scene midpoint stills
+      - name: Export 20 narration-beat review stills
         working-directory: fixreach-promo
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p out/keyframes
-          for spec in '01:125' '02:420' '03:779' '04:1119' '05:1395' '06:1630'; do
-            name="${spec%%:*}"; frame="${spec##*:}"
-            npx remotion still src/index.ts FixReachPromo "out/keyframes/scene_${name}.png" --frame="${frame}" --image-format=png
+          for index in $(seq 0 19); do
+            beat=$((index + 1))
+            if [ "$index" -eq 19 ]; then frame=2885; else frame=$((index * 150 + 75)); fi
+            printf -v name '%02d' "$beat"
+            npx remotion still src/index.ts FixReachPromo "out/keyframes/beat_${name}.png" --frame="$frame" --image-format=png
           done
       - name: Verify Stage 1 deliverables
         working-directory: fixreach-promo
@@ -69,7 +71,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s out/visuals.mp4 && test -s out/sfx.wav
-          test "$(find out/keyframes -maxdepth 1 -name 'scene_*.png' | wc -l)" -eq 6
+          test "$(find out/keyframes -maxdepth 1 -name 'beat_*.png' | wc -l)" -eq 20
           ffprobe -v error -show_streams -show_format -of json out/visuals.mp4 > out/visuals_probe.json
           ffprobe -v error -show_streams -show_format -of json out/sfx.wav > out/sfx_probe.json
           python scripts/verify_stage1.py
@@ -81,7 +83,7 @@ jobs:
           path: |
             fixreach-promo/out/visuals.mp4
             fixreach-promo/out/sfx.wav
-            fixreach-promo/out/keyframes/*.png
+            fixreach-promo/out/keyframes/beat_*.png
             fixreach-promo/out/*_probe.json
             fixreach-promo/public/manim/*.mp4
           if-no-files-found: error

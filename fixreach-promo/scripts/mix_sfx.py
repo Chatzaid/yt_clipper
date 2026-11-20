@@ -1,9 +1,13 @@
 from pathlib import Path
 import numpy as np
 from scipy.io.wavfile import read,write
+import json
 ROOT=Path(__file__).resolve().parents[1]; SFX=ROOT/"public"/"sfx"; OUT=ROOT/"out"
-RATE=48000; FPS=30; TOTAL_FRAMES=2920; SAMPLES_PER_FRAME=RATE//FPS; N=TOTAL_FRAMES*SAMPLES_PER_FRAME
-# Frame positions follow the supplied six-scene voiceover/SRT timeline.
+TIMING=json.loads((ROOT/"scene-timing.json").read_text(encoding="utf-8"))
+RATE=48000; FPS=int(TIMING["fps"]); TOTAL_FRAMES=int(TIMING["total_frames"])
+if RATE % FPS: raise ValueError(f"Sample rate {RATE} is not divisible by {FPS}fps")
+SAMPLES_PER_FRAME=RATE//FPS; N=TOTAL_FRAMES*SAMPLES_PER_FRAME
+# Frame positions follow the six chapter cuts and narration cue moments; the 20 visual beats remain silent overlays.
 events=[
  (24,"pop.wav",.24),(420,"whoosh.wav",.32),(470,"pop.wav",.26),
  (990,"whoosh.wav",.32),(1089,"pop.wav",.22),

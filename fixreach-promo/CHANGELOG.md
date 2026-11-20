@@ -115,3 +115,12 @@
 - Six scenes compressed to 250/340/378/302/251/219 frames (58 seconds); Remotion scene-local animation clocks are scaled directly (Sequence has no playbackRate prop), and SFX events are re-anchored.
 - Manim Scene 02 keeps Hinglish ₹200 line; Scene 05 is a clean green chart. Scene 03/04 moved up for safe-zone clearance; Scene 06 is centered FixReach + green CTA + trial badge.
 - Strict output verification and artifact upload added. No VO, BGM or subtitles added.
+
+
+## 2026-11-20 — Repair Stage 1 verifier and expand review QA
+- Fixed Run #37's blocker: Stage 1 verification no longer requires voiceover.wav in the checkout. It validates the committed SRT against scene-timing.json instead; VO remains excluded from the Stage 1 render.
+- Added the exact supplied subtitles.srt as a timing reference only (not burned into the video).
+- Corrected the scene timing JSON field typo and made SFX sample count derive from the shared timing file.
+- Replaced six scene stills with 20 beat-centre stills so the next review artifact can expose every 5-second visual change.
+- Corrected crossfade windows to overlap across each beat boundary, and aligned late beats to the supplied SRT narration: exclusive enquiries, repair-margin maths, and the CTA.
+- Validation to be confirmed by the next GitHub Actions run; no voiceover or BGM is embedded in Stage 1.

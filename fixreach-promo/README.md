@@ -19,3 +19,7 @@ All additions are isolated under `fixreach-promo/` except the GitHub Actions wor
 
 ## Narration-driven visual rhythm
 The six chapter compositions are the backbone, not the only visual changes. `NarrativeBeatOverlay` adds 20 story-specific visual information beats at 5-second intervals across the 97.32-second supplied narration. Adjacent beats overlap with 12-frame crossfades at 30fps. Each beat changes its headline, explanatory line, diagram motif, and signal colour while remaining above the reserved 78%–84% caption-safe band. The overlay is visual-only: no voiceover, BGM, subtitles, or extra audio are embedded in Stage 1.
+
+
+### Stage 1 validation and visual QA
+The verifier reads the 97.320-second duration from `scene-timing.json` and checks the committed `public/audio/subtitles.srt` against it. The narration WAV is intentionally not required in the CI checkout or embedded in Stage 1. The workflow exports 20 beat-centre stills (one for each five-second visual beat) for review, in addition to silent visuals and the separate Python-generated SFX WAV.
