@@ -1,5 +1,12 @@
 # FixReach visual changelog
 
+## 2026-11-20 — opening hook rebuilt as a shared-lead dispatch board
+- Replaced the generic shared-lead card and loosely moving technician row with a single service-request ticket that visibly branches to five technicians.
+- Added a consistent request ID, a clear `SHARED ×5` stamp, and matching `SAME REQUEST` labels so the viewer understands the competition at a glance.
+- Animated the five dispatch routes and staggered technician arrivals; retained the Surat/Ring Road context and the existing orange/red problem-state palette.
+- Kept the headline, ticket, route diagram, and technicians above the bottom caption band.
+- Validation: source reviewed and fetched back after commit; no TypeScript build or render was run, and no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — direct enquiry flow rebuilt as a repair dispatch board
 - Replaced the stacked generic WhatsApp/call cards with one customer request that branches into two real contact paths and reconverges at the shop's repair desk.
 - Animated the message/call routes into a single shop destination so the visual explains the direct path rather than merely claiming there is no middleman.
