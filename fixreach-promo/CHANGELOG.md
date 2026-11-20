@@ -1,3 +1,8 @@
+## 2026-11-20 — shared-lead dispatch routes staggered by technician
+- Changed the five orange branches from a simultaneous draw into a left-to-right dispatch sequence, with each technician card beginning its reveal as its route reaches the endpoint.
+- Kept the original request ticket, Surat/Ring Road context, five technician cards, 180-frame composition, and lower caption-safe band intact.
+- Validation: checked the stagger windows for all five paths and their matching card reveals; no TypeScript build or render was run, and no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — Scene 3 phase transitions de-overlapped
 - Removed the 20-frame local-targeting/cross-city overlap and the 40-frame cross-city/service-radius overlap, which could stack two headings and two map stories during handoffs.
 - Re-timed the three visual phases to fade out before the next phase fades in, keeping the shared street-map background visible as a clean transition bed.
