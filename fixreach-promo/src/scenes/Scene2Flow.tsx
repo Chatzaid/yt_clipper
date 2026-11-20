@@ -318,7 +318,7 @@ export const Scene2Flow: React.FC = () => {
           position: 'absolute',
           left: 70,
           right: 70,
-          bottom: 285,
+          bottom: 430,
           textAlign: 'center',
           color: '#CBD5E1',
           fontSize: 23,
