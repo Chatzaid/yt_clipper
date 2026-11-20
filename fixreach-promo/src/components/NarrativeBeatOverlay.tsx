@@ -75,33 +75,31 @@ const BeatGlyph: React.FC<{kind: Beat['visual']; accent: string}> = ({kind, acce
 export const NarrativeBeatOverlay: React.FC = () => {
   const frame = useCurrentFrame();
   const beatFrames = 150;
-  const fadeFrames = 12;
+  const index = Math.min(BEATS.length - 1, Math.floor(frame / beatFrames));
+  const beat = BEATS[index];
+  const start = index * beatFrames;
+  const localFrame = frame - start;
+  // Reveal one card at a time. A crossfade of two full text panels caused ghosted,
+  // unreadable headlines at every five-second boundary.
+  const opacity = interpolate(localFrame, [0, 8], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const offsetY = (1 - opacity) * 10;
+
   return (
     <div style={{position:'absolute',inset:0,pointerEvents:'none',fontFamily:'Inter,Arial,sans-serif',overflow:'hidden'}}>
-      {BEATS.map((beat,index) => {
-        const start = index * beatFrames;
-        const end = Math.min((index + 1) * beatFrames, 2920);
-        if (frame < (index === 0 ? start : start - fadeFrames) || frame > (index === BEATS.length - 1 ? end : end + fadeFrames)) return null;
-        const fadeInStart = index === 0 ? start : start - fadeFrames;
-        const fadeOutEnd = index === BEATS.length - 1 ? end : end + fadeFrames;
-        const fadeIn = interpolate(frame,[fadeInStart,start+fadeFrames],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
-        const fadeOut = interpolate(frame,[end-fadeFrames,fadeOutEnd],[1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
-        const opacity = Math.min(fadeIn,fadeOut);
-        if (opacity <= 0) return null;
-        return (
-          <div key={index} style={{position:'absolute',left:54,right:54,top:'68.5%',height:154,boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,padding:'18px 26px',borderRadius:22,border:'1px solid '+beat.accent+'88',borderLeft:'7px solid '+beat.accent,background:'linear-gradient(105deg,rgba(7,15,27,.97),rgba(17,27,42,.92))',boxShadow:'0 18px 48px rgba(0,0,0,.32),0 0 34px '+beat.accent+'18',opacity,transform:'translateY('+(1-opacity)*14+'px)',willChange:'opacity,transform'}}>
-            <div style={{width:72,flex:'0 0 72px',height:72,borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',background:beat.accent+'18',border:'1px solid '+beat.accent+'66',color:beat.accent,fontSize:24,fontWeight:950}}>{String(index+1).padStart(2,'0')}</div>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:15,fontWeight:950,letterSpacing:2,color:beat.accent}}>LIVE STORY BEAT / {String(index+1).padStart(2,'0')} OF 20</div>
-              <div style={{fontSize:29,lineHeight:1.1,fontWeight:950,color:'#F8FAFC',marginTop:8,letterSpacing:-.4}}>{beat.title}</div>
-              <div style={{fontSize:18,lineHeight:1.2,fontWeight:750,color:'#AEBBCB',marginTop:7}}>{beat.detail}</div>
-            </div>
-            <div style={{width:154,flex:'0 0 154px',height:104,display:'flex',alignItems:'center',justifyContent:'center',borderLeft:'1px solid #334155',paddingLeft:14}}>
-              <BeatGlyph kind={beat.visual} accent={beat.accent}/>
-            </div>
-          </div>
-        );
-      })}
+      <div style={{position:'absolute',left:54,right:54,top:'68.5%',height:154,boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,padding:'18px 26px',borderRadius:22,border:'1px solid '+beat.accent+'88',borderLeft:'7px solid '+beat.accent,background:'linear-gradient(105deg,rgba(7,15,27,.97),rgba(17,27,42,.92))',boxShadow:'0 18px 48px rgba(0,0,0,.32),0 0 34px '+beat.accent+'18',opacity,transform:'translateY('+offsetY+'px)',willChange:'opacity,transform'}}>
+        <div style={{width:72,flex:'0 0 72px',height:72,borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',background:beat.accent+'18',border:'1px solid '+beat.accent+'66',color:beat.accent,fontSize:24,fontWeight:950}}>{String(index+1).padStart(2,'0')}</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:15,fontWeight:950,letterSpacing:2,color:beat.accent}}>LIVE STORY BEAT / {String(index+1).padStart(2,'0')} OF 20</div>
+          <div style={{fontSize:29,lineHeight:1.1,fontWeight:950,color:'#F8FAFC',marginTop:8,letterSpacing:-.4}}>{beat.title}</div>
+          <div style={{fontSize:18,lineHeight:1.2,fontWeight:750,color:'#AEBBCB',marginTop:7}}>{beat.detail}</div>
+        </div>
+        <div style={{width:154,flex:'0 0 154px',height:104,display:'flex',alignItems:'center',justifyContent:'center',borderLeft:'1px solid #334155',paddingLeft:14}}>
+          <BeatGlyph kind={beat.visual} accent={beat.accent}/>
+        </div>
+      </div>
     </div>
   );
 };
