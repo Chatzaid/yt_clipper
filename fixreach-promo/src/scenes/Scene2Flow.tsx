@@ -6,7 +6,7 @@ export const Scene2Flow: React.FC = () => {
   const { fps } = useVideoConfig();
 
   // The bargaining quote follows its spoken line, then clears before the social-feed story begins.
-  const quoteIn = interpolate(frame, [44, 62], [0, 1], {
+  const quoteIn = interpolate(frame, [159, 177], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -20,12 +20,17 @@ export const Scene2Flow: React.FC = () => {
     fps,
     config: { damping: 18, stiffness: 72 },
   });
+  // A neutral feed skeleton bridges the spoken "people are scrolling" line to the sponsored ad reveal.
+  const feedSkeleton = interpolate(frame, [252, 268, 435, 450], [0, 1, 1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
   const route = interpolate(frame, [270, 324], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
   const adReveal = spring({
-    frame: frame - 326,
+    frame: frame - 435,
     fps,
     config: { damping: 16, stiffness: 105 },
   });
@@ -248,6 +253,7 @@ export const Scene2Flow: React.FC = () => {
             border: '8px solid #E5E7EB',
             borderRadius: 46,
             background: '#101827',
+            position: 'relative',
             boxShadow: '0 22px 64px rgba(0,0,0,.5), 0 0 42px rgba(16,185,129,.12)',
           }}
         >
@@ -261,10 +267,60 @@ export const Scene2Flow: React.FC = () => {
           </div>
           <div
             style={{
+              position: 'absolute',
+              top: 110,
+              left: 18,
+              right: 18,
+              height: 365,
+              zIndex: 2,
+              boxSizing: 'border-box',
+              padding: 16,
+              border: '1px solid #334155',
+              borderRadius: 18,
+              background: '#1F2937',
+              opacity: feedSkeleton,
+              transform: 'translateY(' + ((1 - feedSkeleton) * 12) + 'px)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 16, background: '#475569' }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ height: 10, width: '48%', borderRadius: 6, background: '#64748B' }} />
+                <div style={{ height: 8, width: '32%', marginTop: 7, borderRadius: 6, background: '#475569' }} />
+              </div>
+            </div>
+            <div
+              style={{
+                height: 145,
+                marginTop: 18,
+                borderRadius: 13,
+                background: 'linear-gradient(135deg, #2A4054, #111827)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <div style={{ width: 60, height: 60, borderRadius: 30, border: '3px solid #475569', opacity: 0.55 }} />
+            </div>
+            <div style={{ height: 10, width: '82%', marginTop: 18, borderRadius: 6, background: '#64748B' }} />
+            <div style={{ height: 8, width: '58%', marginTop: 10, borderRadius: 6, background: '#475569' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 18 }}>
+              <div style={{ height: 8, width: 58, borderRadius: 6, background: '#334155' }} />
+              <div style={{ height: 8, width: 58, borderRadius: 6, background: '#334155' }} />
+              <div style={{ height: 8, width: 58, borderRadius: 6, background: '#334155' }} />
+            </div>
+            <div style={{ position: 'absolute', left: 16, right: 16, bottom: 12, color: '#94A3B8', fontSize: 12, fontWeight: 900, letterSpacing: 1.2, textAlign: 'center' }}>
+              SCROLLING LOCAL POSTS
+            </div>
+          </div>
+          <div
+            style={{
               padding: 17,
               border: '1px solid #334155',
               borderRadius: 18,
               background: '#1F2937',
+              position: 'relative',
+              zIndex: 1,
               opacity: adReveal,
               transform: 'translateY(' + ((1 - adReveal) * 18) + 'px)',
             }}

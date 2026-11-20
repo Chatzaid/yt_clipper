@@ -1,3 +1,9 @@
+## 2026-11-20 — Scene 2 quote and sponsored-ad reveals aligned to narration
+- Moved the ₹200 customer quote reveal from local frame 44 to frame 159, matching the 19.3s spoken quote after the scene's 14.0s start; it clears at the 22.3s cue boundary.
+- Delayed the sponsored repair ad from local frame 326 to frame 435 (28.5s), when the narration reaches Instagram/Facebook scrolling; the direct-call CTA remains timed to the 31.05s call line.
+- Added a neutral feed-skeleton bridge between the phone's arrival and the sponsored creative so the screen does not sit empty while the narration describes people scrolling.
+- Validation: checked scene-local frames against CaptionOverlay cue timestamps and Root.tsx's 420-frame scene start. No TypeScript build or Remotion render was run; no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — ROI and CTA compositions moved clear of the caption band
 - Shifted the Scene 5 repair-economics composition upward so the three ad-spend tiles and illustrative qualifier no longer compete with the lower subtitle region.
 - Compressed Scene 6's service work-order card to end above the caption-safe band, shortened the proof rows and CTA slightly, and removed the redundant low footer that sat behind captions.
