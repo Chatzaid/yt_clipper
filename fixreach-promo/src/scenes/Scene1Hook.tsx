@@ -32,7 +32,7 @@ const RingRoadDispatch: React.FC<{frame: number}> = ({frame}) => {
         opacity: enter,
         borderRadius: 30,
         border: '2px solid #334155',
-        background: 'linear-gradient(145deg, rgba(8,18,31,.99), rgba(12,25,41,.99))',
+        background: 'linear-gradient(145deg, #08121F, #0C1929)',
         boxShadow: '0 24px 70px rgba(0,0,0,.38), 0 0 42px rgba(249,115,22,.08)',
         overflow: 'hidden',
       }}
