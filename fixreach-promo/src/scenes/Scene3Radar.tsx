@@ -5,9 +5,10 @@ import {MapPin} from '../components/Visuals';
 export const Scene3Radar: React.FC = () => {
   const f = useCurrentFrame();
   // Follow the spoken order: local targeting, the cross-city example, then the useful radius.
-  const localIntro = interpolate(f, [0, 18, 165, 205], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  const crossCity = interpolate(f, [185, 220, 465, 505], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  const serviceZone = interpolate(f, [465, 505, 635], [0, 1, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  // Phase handoffs are deliberately non-overlapping: never show two map stories at once.
+  const localIntro = interpolate(f, [0, 18, 185, 193], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const crossCity = interpolate(f, [193, 205, 455, 463], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const serviceZone = interpolate(f, [463, 475, 635], [0, 1, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const sweep = (f * 1.35) % 360;
   const pulse = 1 + 0.035 * Math.sin(f / 7);
 
