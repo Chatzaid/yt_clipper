@@ -18,10 +18,6 @@ export const Scene1Hook: React.FC = () => {
     fps,
     config: { damping: 15, stiffness: 110 },
   });
-  const routes = interpolate(frame, [54, 108], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
   const footer = spring({
     frame: frame - 142,
     fps,
@@ -184,8 +180,14 @@ export const Scene1Hook: React.FC = () => {
           overflow: 'visible',
         }}
       >
-        {branchX.map((x) => {
+        {branchX.map((x, index) => {
           const length = 160 + Math.abs(425 - x);
+          const routeProgress = interpolate(
+            frame,
+            [54 + index * 7, 84 + index * 7],
+            [0, 1],
+            { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
+          );
           return (
             <g key={x}>
               <path
@@ -196,9 +198,9 @@ export const Scene1Hook: React.FC = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeDasharray={length}
-                strokeDashoffset={length * (1 - routes)}
+                strokeDashoffset={length * (1 - routeProgress)}
               />
-              <circle cx={x} cy="160" r="8" fill="#F97316" opacity={routes} />
+              <circle cx={x} cy="160" r="8" fill="#F97316" opacity={routeProgress} />
             </g>
           );
         })}
@@ -218,7 +220,7 @@ export const Scene1Hook: React.FC = () => {
       >
         {branchX.map((x, index) => {
           const reveal = spring({
-            frame: frame - 82 - index * 8,
+            frame: frame - 84 - index * 7,
             fps,
             config: { damping: 16, stiffness: 115 },
           });
