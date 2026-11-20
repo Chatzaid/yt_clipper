@@ -17,7 +17,7 @@ export const Scene4Leads:React.FC=()=>{
  return <AbsoluteFill style={{background:'#0B0F19',color:'#F9FAFB',fontFamily:'Inter,Arial,sans-serif',justifyContent:'center',alignItems:'center',paddingTop:160,paddingBottom:620,boxSizing:'border-box',overflow:'hidden'}}>
   <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 50% 47%,#10B9811C,transparent 58%)'}}/>
   <div style={{width:900,maxWidth:'92%',display:'flex',flexDirection:'column',alignItems:'center',gap:18,position:'relative'}}>
-   <div style={{fontSize:31,fontWeight:950,letterSpacing:3,color:'#FB923C',textAlign:'center',marginBottom:4}}>DIRECT-TO-SHOP ROUTING</div>
+   <div style={{fontSize:31,fontWeight:950,letterSpacing:3,color:'#FB923C',textAlign:'center',marginBottom:4}}>ONE REQUEST. TWO DIRECT CHANNELS.</div>
    <div style={{width:800,maxWidth:'100%',minHeight:145,boxSizing:'border-box',border:'2px solid #F97316',borderRadius:24,background:'#111827',padding:'24px 30px',display:'flex',alignItems:'center',gap:24,opacity:customer,transform:'translateY('+(1-customer)*32+'px) scale('+(.97+.03*customer)+')',boxShadow:'0 14px 48px #F9731620'}}>
     <div style={{width:74,height:74,flex:'0 0 74px',borderRadius:20,background:'#F9731622',border:'1px solid #F9731688',display:'flex',alignItems:'center',justifyContent:'center',fontSize:27,fontWeight:950,color:'#FDBA74'}}>01</div>
     <div style={{flex:1}}>
