@@ -1,3 +1,9 @@
+## 2026-11-20 — Rebuild the opening as a Surat Ring Road dispatch race
+- Replaced the static five-way branch-and-technician row with a custom schematic Ring Road loop: five moving technician markers orbit the same repair request while animated route pulses converge on one shared lead.
+- Kept the field-dispatch ticket, Surat/Ring Road context, orange/red problem-state palette, 420-frame opening window, chapter rail, and five-second narrative overlay.
+- Removed the redundant low footer; the new dispatch map carries the traffic-race metaphor in the central visual area and leaves the 68.5% beat rail and 78%–84% caption reserve clear.
+- Validation: checked the component export, Remotion hooks, SVG geometry, five marker definitions, frame-driven movement, and unchanged 420-frame scene schedule. Full typecheck/render was not run; commit uses [skip ci] and no GitHub Actions run was requested.
+
 ## 2026-11-20 — Mount the bespoke repair-economics scene in the final composition
 - Root was mounting the sparse Manim ROI placeholder even though the richer `Scene5ROI` work-order composition already existed; the result left the core one-repair-versus-multi-day-ad-spend explanation visually empty.
 - Mounted `Scene5ROI` directly in chapter 05: completed-repair contribution margin, three illustrative campaign-day tiles, and a variable-cost qualifier now appear in the central safe area.
