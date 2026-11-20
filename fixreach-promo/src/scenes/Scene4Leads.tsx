@@ -6,7 +6,9 @@ export const Scene4Leads:React.FC=()=>{
  const {fps}=useVideoConfig();
  const customer=spring({frame:f-12,fps,config:{damping:14,stiffness:120}});
  const channels=spring({frame:f-68,fps,config:{damping:15,stiffness:105}});
- const shop=spring({frame:f-180,fps,config:{damping:15,stiffness:105}});
+ // Draw the reconverging WhatsApp/call routes during the spoken direct-to-shop handoff.
+ const shopHandoff=interpolate(f,[168,204],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
+ const shop=spring({frame:f-204,fps,config:{damping:15,stiffness:105}});
  const proof=spring({frame:f-302,fps,config:{damping:13,stiffness:130}});
  // The exclusive-enquiry proof starts with its spoken caption at 69.15s (scene-local frame 450).
  const exclusive=interpolate(f,[450,468,507],[0,1,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
@@ -43,9 +45,9 @@ export const Scene4Leads:React.FC=()=>{
      <div style={{display:'inline-block',marginTop:14,borderRadius:9,padding:'7px 12px',background:'#F97316',color:'#1C1917',fontSize:17,fontWeight:950}}>RINGING</div>
     </div>
    </div>
-   <svg width="800" height="76" viewBox="0 0 800 76" style={{overflow:'visible',opacity:shop}}>
-    <path d="M200 0 V20 H400 V70 M600 0 V20 H400 V70" fill="none" stroke="#10B981" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="620" strokeDashoffset={620*(1-route)}/>
-    <circle cx="400" cy="70" r="8" fill="#10B981" opacity={route}/>
+   <svg width="800" height="76" viewBox="0 0 800 76" style={{overflow:'visible',opacity:shopHandoff}}>
+    <path d="M200 0 V20 H400 V70 M600 0 V20 H400 V70" fill="none" stroke="#10B981" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="620" strokeDashoffset={620*(1-shopHandoff)}/>
+    <circle cx="400" cy="70" r="8" fill="#10B981" opacity={shopHandoff}/>
    </svg>
    <div style={{width:800,maxWidth:'100%',minHeight:184,boxSizing:'border-box',border:'2px solid #10B981',borderRadius:24,background:'#111F1D',padding:'23px 28px',display:'flex',alignItems:'center',gap:22,opacity:shop,transform:'translateY('+(1-shop)*28+'px) scale('+(.97+.03*shop)+')',boxShadow:'0 16px 50px #10B98122'}}>
     <div style={{width:78,height:78,flex:'0 0 78px',borderRadius:18,background:'#10B981',display:'flex',alignItems:'center',justifyContent:'center',fontSize:25,fontWeight:950,color:'#052E24'}}>SHOP</div>
