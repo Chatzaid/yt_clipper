@@ -1,3 +1,8 @@
+## 2026-11-20 — Seal the Ring Road dispatch panel against underlay bleed
+- Made the new opening dispatch-map panel fully opaque instead of using a 99%-alpha gradient. This prevents the retired five-card technician row from ghosting through the central customer beacon and route map.
+- Kept the animated Ring Road loop, five moving markers, request ticket, and all chapter/beat timing unchanged.
+- Validation: read back the updated component, checked the panel background and unchanged 420-frame scene schedule. Commit uses [skip ci]; no GitHub Actions workflow was started.
+
 ## 2026-11-20 — Rebuild the opening as a Surat Ring Road dispatch race
 - Replaced the static five-way branch-and-technician row with a custom schematic Ring Road loop: five moving technician markers orbit the same repair request while animated route pulses converge on one shared lead.
 - Kept the field-dispatch ticket, Surat/Ring Road context, orange/red problem-state palette, 420-frame opening window, chapter rail, and five-second narrative overlay.
