@@ -5,7 +5,7 @@ import { Technician, Pulse } from '../components/Visuals';
 const branchX = [75, 250, 425, 600, 775];
 
 export const Scene1Hook: React.FC = () => {
-  const frame = useCurrentFrame() * (420 / 250);
+  const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const header = spring({

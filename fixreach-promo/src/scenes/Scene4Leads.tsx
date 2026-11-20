@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill,interpolate,spring,useCurrentFrame,useVideoConfig} from 'remotion';
 
 export const Scene4Leads:React.FC=()=>{
- const f=useCurrentFrame() * (507 / 302);
+ const f=useCurrentFrame();
  const {fps}=useVideoConfig();
  const customer=spring({frame:f-12,fps,config:{damping:14,stiffness:120}});
  const channels=spring({frame:f-68,fps,config:{damping:15,stiffness:105}});

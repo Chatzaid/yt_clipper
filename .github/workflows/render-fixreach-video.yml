@@ -44,9 +44,12 @@ jobs:
       - name: TypeScript preflight
         working-directory: fixreach-promo
         run: npm run typecheck
-      - name: Render silent 1080x1920 visual master
+      - name: Render visual composition
         working-directory: fixreach-promo
-        run: npm run build && mv out/base_visuals.mp4 out/visuals.mp4
+        run: npm run build
+      - name: Strip every audio stream from Stage 1 visuals
+        working-directory: fixreach-promo
+        run: ffmpeg -y -i out/base_visuals.mp4 -map 0:v:0 -an -c:v copy -movflags +faststart out/visuals.mp4
       - name: Assemble synced SFX WAV (no VO or BGM)
         working-directory: fixreach-promo
         run: python scripts/mix_sfx.py
