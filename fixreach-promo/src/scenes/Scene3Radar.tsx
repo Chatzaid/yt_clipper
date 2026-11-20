@@ -3,7 +3,7 @@ import {AbsoluteFill, useCurrentFrame, interpolate} from 'remotion';
 import {MapPin} from '../components/Visuals';
 
 export const Scene3Radar: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useCurrentFrame() * (635 / 378);
   // Follow the spoken order: local targeting, the cross-city example, then the useful radius.
   // Phase handoffs are deliberately non-overlapping: never show two map stories at once.
   const localIntro = interpolate(f, [0, 18, 185, 193], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});

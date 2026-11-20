@@ -100,6 +100,6 @@
 - Actions installs Python 3.11, Manim 0.19, NumPy/SciPy, FFmpeg, Cairo and Pango; renders Manim before Remotion.
 - Python generates six original SFX types; a frame-accurate 48kHz SFX-only WAV is assembled separately.
 - Remotion no longer mounts CaptionOverlay or audio; silent visuals.mp4 reserves y=78%–84% for Stage 2 captions.
-- Six scenes compressed to 250/340/378/302/251/219 frames (58 seconds); SFX events re-anchored.
+- Six scenes compressed to 250/340/378/302/251/219 frames (58 seconds); Remotion scene-local animation clocks are scaled directly (Sequence has no playbackRate prop), and SFX events are re-anchored.
 - Manim Scene 02 keeps Hinglish ₹200 line; Scene 05 is a clean green chart. Scene 03/04 moved up for safe-zone clearance; Scene 06 is centered FixReach + green CTA + trial badge.
 - Strict output verification and artifact upload added. No VO, BGM or subtitles added.
