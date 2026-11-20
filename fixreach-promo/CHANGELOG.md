@@ -1,3 +1,9 @@
+## 2026-11-20 — Scene 3 phase transitions de-overlapped
+- Removed the 20-frame local-targeting/cross-city overlap and the 40-frame cross-city/service-radius overlap, which could stack two headings and two map stories during handoffs.
+- Re-timed the three visual phases to fade out before the next phase fades in, keeping the shared street-map background visible as a clean transition bed.
+- Preserved the 635-frame Scene 3 duration and the existing voiceover chapter window; no narration, captions, or audio assets were changed.
+- Validation: sampled 16 transition frames and confirmed no adjacent phase opacity overlap; source fetched back after commit. No TypeScript build or render was run, and no GitHub Actions workflow was triggered.
+
 # FixReach visual changelog
 
 ## 2026-11-20 — opening hook rebuilt as a shared-lead dispatch board
