@@ -8,10 +8,11 @@ export const Scene4Leads:React.FC=()=>{
  const channels=spring({frame:f-68,fps,config:{damping:15,stiffness:105}});
  const shop=spring({frame:f-180,fps,config:{damping:15,stiffness:105}});
  const proof=spring({frame:f-302,fps,config:{damping:13,stiffness:130}});
- const exclusive=interpolate(f,[438,468,507],[0,1,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
+ // The exclusive-enquiry proof starts with its spoken caption at 69.15s (scene-local frame 450).
+ const exclusive=interpolate(f,[450,468,507],[0,1,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
  const route=interpolate(f,[68,145],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
  const pulse=1+.035*Math.sin(f/7);
- return <AbsoluteFill style={{background:'#0B0F19',color:'#F9FAFB',fontFamily:'Inter,Arial,sans-serif',justifyContent:'center',alignItems:'center',paddingTop:160,paddingBottom:260,boxSizing:'border-box',overflow:'hidden'}}>
+ return <AbsoluteFill style={{background:'#0B0F19',color:'#F9FAFB',fontFamily:'Inter,Arial,sans-serif',justifyContent:'center',alignItems:'center',paddingTop:160,paddingBottom:500,boxSizing:'border-box',overflow:'hidden'}}>
   <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 50% 47%,#10B9811C,transparent 58%)'}}/>
   <div style={{width:900,maxWidth:'92%',display:'flex',flexDirection:'column',alignItems:'center',gap:18,position:'relative'}}>
    <div style={{fontSize:31,fontWeight:950,letterSpacing:3,color:'#FB923C',textAlign:'center',marginBottom:4}}>DIRECT-TO-SHOP ROUTING</div>
