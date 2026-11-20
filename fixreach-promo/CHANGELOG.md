@@ -1,3 +1,9 @@
+## 2026-11-20 — Scene 4 WhatsApp and call routes now converge simultaneously
+- Split the combined SVG path into two independently dashed 270 px paths, so the WhatsApp and phone-call branches draw toward the shop at the same time instead of one branch completing before the other.
+- Added small channel-origin markers to make both incoming routes legible during the handoff; the shared shop destination and 36-frame reveal window remain unchanged.
+- Preserved the existing scene duration, narration/caption cue times, proof reveal, and bottom caption-safe reserve.
+- Validation: checked both route geometries (20 + 200 + 50 = 270 px each), matching dash lengths/offsets, and the existing 168–204 local-frame handoff window. Source read-back passed; no TypeScript build, Remotion render, or GitHub Actions workflow was run.
+
 ## 2026-11-20 — Scene 4 shop handoff route now animates on-screen
 - Fixed a timing bug where the two WhatsApp/call connector paths were already fully drawn before their SVG became visible, making the reconvergence animation appear static.
 - Added a dedicated 36-frame route draw during the spoken direct-to-shop beat; the shop work-order card now enters as the routes finish, instead of appearing with a pre-completed connector.
