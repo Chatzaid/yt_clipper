@@ -369,22 +369,6 @@ export const Scene2Flow: React.FC = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 70,
-          right: 70,
-          bottom: 430,
-          textAlign: 'center',
-          color: '#CBD5E1',
-          fontSize: 23,
-          fontWeight: 900,
-          letterSpacing: 1.4,
-          opacity: feed,
-        }}
-      >
-        LOCAL REPAIR NEED → SURAT FEED → DIRECT ENQUIRY
-      </div>
     </AbsoluteFill>
   );
 };
