@@ -1,3 +1,10 @@
+## 2026-11-20 — Added a 20-beat narration-driven visual overlay
+- Added 20 distinct visual information beats across the full 97.32s narration, starting at 5-second intervals and mapped to the supplied Hindi voiceover/SRT story progression.
+- Each beat uses a consistent FixReach field-dispatch HUD treatment with its own diagram motif, headline, supporting line, and amber/green/red signal colour.
+- Added overlapping 12-frame fade-out/fade-in windows so adjacent beats crossfade rather than hard-cut; the 6 chapter scenes remain the backbone, not the only visual changes.
+- Positioned the overlay above the reserved 78%–84% caption band; it contains no baked subtitles and does not add audio.
+- Validation: checked 20 beat definitions, 5-second frame cadence (150 frames at 30fps), 12-frame overlap, and Root composition integration by source read-back. No GitHub Actions workflow was triggered; a full Remotion typecheck/render is still required.
+
 ## 2026-11-20 — Scene 4 headline now explains the two direct contact paths
 - Replaced the repeated `DIRECT-TO-SHOP ROUTING` body headline with `ONE REQUEST. TWO DIRECT CHANNELS.`; the chapter pill already names the routing chapter, so the body now explains the diagram instead of echoing the pill.
 - Kept the customer request, WhatsApp/phone branches, converging shop route, proof timing, caption-safe layout, and audio/SFX cues unchanged.

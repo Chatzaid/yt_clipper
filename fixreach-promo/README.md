@@ -15,3 +15,7 @@ npm run build
 ```
 
 All additions are isolated under `fixreach-promo/` except the GitHub Actions workflow requested at `.github/workflows/render-fixreach-video.yml`.
+
+
+## Narration-driven visual rhythm
+The six chapter compositions are the backbone, not the only visual changes. `NarrativeBeatOverlay` adds 20 story-specific visual information beats at 5-second intervals across the 97.32-second supplied narration. Adjacent beats overlap with 12-frame crossfades at 30fps. Each beat changes its headline, explanatory line, diagram motif, and signal colour while remaining above the reserved 78%–84% caption-safe band. The overlay is visual-only: no voiceover, BGM, subtitles, or extra audio are embedded in Stage 1.
