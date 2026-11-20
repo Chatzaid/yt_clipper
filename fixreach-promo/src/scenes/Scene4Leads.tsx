@@ -46,7 +46,10 @@ export const Scene4Leads:React.FC=()=>{
     </div>
    </div>
    <svg width="800" height="76" viewBox="0 0 800 76" style={{overflow:'visible',opacity:shopHandoff}}>
-    <path d="M200 0 V20 H400 V70 M600 0 V20 H400 V70" fill="none" stroke="#10B981" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="620" strokeDashoffset={620*(1-shopHandoff)}/>
+    <path d="M200 0 V20 H400 V70" fill="none" stroke="#10B981" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="270" strokeDashoffset={270*(1-shopHandoff)}/>
+    <path d="M600 0 V20 H400 V70" fill="none" stroke="#10B981" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="270" strokeDashoffset={270*(1-shopHandoff)}/>
+    <circle cx="200" cy="0" r="6" fill="#6EE7B7" opacity={shopHandoff}/>
+    <circle cx="600" cy="0" r="6" fill="#FDBA74" opacity={shopHandoff}/>
     <circle cx="400" cy="70" r="8" fill="#10B981" opacity={shopHandoff}/>
    </svg>
    <div style={{width:800,maxWidth:'100%',minHeight:184,boxSizing:'border-box',border:'2px solid #10B981',borderRadius:24,background:'#111F1D',padding:'23px 28px',display:'flex',alignItems:'center',gap:22,opacity:shop,transform:'translateY('+(1-shop)*28+'px) scale('+(.97+.03*shop)+')',boxShadow:'0 16px 50px #10B98122'}}>
