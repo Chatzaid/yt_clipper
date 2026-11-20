@@ -149,11 +149,11 @@ export const Scene6CTA: React.FC = () => {
         style={{
           position: 'absolute',
           left: '50%',
-          top: 248,
+          top: 170,
           width: 860,
-          height: 1040,
+          height: 980,
           boxSizing: 'border-box',
-          padding: 52,
+          padding: 42,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -269,7 +269,7 @@ export const Scene6CTA: React.FC = () => {
               <div
                 key={point.number}
                 style={{
-                  minHeight: 96,
+                  minHeight: 88,
                   boxSizing: 'border-box',
                   display: 'flex',
                   alignItems: 'center',
@@ -332,7 +332,7 @@ export const Scene6CTA: React.FC = () => {
         <div
           style={{
             transform: 'scale(' + buttonPulse + ')',
-            minHeight: 94,
+            minHeight: 86,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -380,23 +380,6 @@ export const Scene6CTA: React.FC = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 455,
-          left: 82,
-          right: 82,
-          display: 'flex',
-          justifyContent: 'space-between',
-          color: '#64748B',
-          fontSize: 16,
-          fontWeight: 800,
-          letterSpacing: 2,
-        }}
-      >
-        <span>LOCAL ADS · DIRECT ENQUIRIES</span>
-        <span>FIXREACH / SURAT</span>
-      </div>
     </AbsoluteFill>
   );
 };
