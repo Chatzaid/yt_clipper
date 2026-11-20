@@ -1,3 +1,9 @@
+## 2026-11-20 — Scene 4 shop handoff route now animates on-screen
+- Fixed a timing bug where the two WhatsApp/call connector paths were already fully drawn before their SVG became visible, making the reconvergence animation appear static.
+- Added a dedicated 36-frame route draw during the spoken direct-to-shop beat; the shop work-order card now enters as the routes finish, instead of appearing with a pre-completed connector.
+- Preserved the initial customer-to-channel route, Scene 4 duration, proof timing, caption cues, and lower safe-zone reserve.
+- Validation: checked the new route window (scene-local frames 168–204) against the 59.8–63.85s direct-contact caption cue and the 64.25s proof cue. Source read-back and static timing checks passed; no TypeScript build, Remotion render, or GitHub Actions workflow was run.
+
 ## 2026-11-20 — Removed Scene 2 footer that collided with captions
 - Removed the redundant `LOCAL REPAIR NEED → SURAT FEED → DIRECT ENQUIRY` footer. Frame inspection showed it physically colliding with the live Hindi caption line during the call-to-action beat.
 - Kept the phone ad, local shop marker, route, and call CTA; the spoken narration and captions already communicate the journey, so the extra footer added clutter rather than information.
