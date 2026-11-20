@@ -1,3 +1,8 @@
+## 2026-11-20 — Scene 4 headline now explains the two direct contact paths
+- Replaced the repeated `DIRECT-TO-SHOP ROUTING` body headline with `ONE REQUEST. TWO DIRECT CHANNELS.`; the chapter pill already names the routing chapter, so the body now explains the diagram instead of echoing the pill.
+- Kept the customer request, WhatsApp/phone branches, converging shop route, proof timing, caption-safe layout, and audio/SFX cues unchanged.
+- Validation: confirmed one exact headline replacement and fetched the updated scene back. No TypeScript build or Remotion render was run; no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — Scene 4 chapter label corrected to describe routing, not guarantee exclusivity
 - Replaced the chapter pill `04 • 100% EXCLUSIVE LEADS` with `04 • DIRECT-TO-SHOP ROUTING`. The former reads like a guaranteed outcome; the latter accurately describes the depicted WhatsApp/call path without promising 100% exclusivity.
 - Preserved chapter timing, scene duration, proof sequence, captions, and audio/SFX cues.
