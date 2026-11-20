@@ -1,3 +1,9 @@
+## 2026-11-20 — Make the five-second story rail readable at every transition
+- Removed the overlapping crossfade of two complete text cards. It caused duplicate/ghosted headlines during each 12-frame overlap.
+- The rail now renders exactly one beat at a time, with a short 8-frame entrance; the outgoing card is replaced at the five-second boundary instead of stacking over its successor.
+- Preserved the 20-beat copy, signal colours, chapter timing, 68.5% rail position, and 78%–84% subtitle reserve.
+- Validation: checked the one-index-per-frame selection, 150-frame cadence, final 70-frame beat, and no overlapping card render path. No GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — Restore the full price-race → social-feed → direct-call composition
 - Replaced the sparse Manim placeholder in the Scene 2 mount with the existing timed React scene, so the central story now carries a repair-shop quote slip, the spoken ₹200 undercut, a scrolling-feed bridge, the sponsored local repair ad, and the direct-call CTA.
 - Kept the 570-frame chapter window and existing narration-aligned reveals: quote at 19.3s, feed bridge at 22.4s, sponsored ad at 28.5s, and call CTA at 31.05s.
