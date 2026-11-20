@@ -1,3 +1,8 @@
+## 2026-11-20 — Scene 4 chapter label corrected to describe routing, not guarantee exclusivity
+- Replaced the chapter pill `04 • 100% EXCLUSIVE LEADS` with `04 • DIRECT-TO-SHOP ROUTING`. The former reads like a guaranteed outcome; the latter accurately describes the depicted WhatsApp/call path without promising 100% exclusivity.
+- Preserved chapter timing, scene duration, proof sequence, captions, and audio/SFX cues.
+- Validation: confirmed the old label occurred once, checked the replacement text and unchanged chapter timing constants, and fetched the updated source back. No TypeScript build or Remotion render was run; no GitHub Actions workflow was triggered.
+ 
 ## 2026-11-20 — Scene 4 WhatsApp and call routes now converge simultaneously
 - Split the combined SVG path into two independently dashed 270 px paths, so the WhatsApp and phone-call branches draw toward the shop at the same time instead of one branch completing before the other.
 - Added small channel-origin markers to make both incoming routes legible during the handoff; the shared shop destination and 36-frame reveal window remain unchanged.
