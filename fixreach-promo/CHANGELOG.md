@@ -1,3 +1,8 @@
+## 2026-11-20 — Removed Scene 2 footer that collided with captions
+- Removed the redundant `LOCAL REPAIR NEED → SURAT FEED → DIRECT ENQUIRY` footer. Frame inspection showed it physically colliding with the live Hindi caption line during the call-to-action beat.
+- Kept the phone ad, local shop marker, route, and call CTA; the spoken narration and captions already communicate the journey, so the extra footer added clutter rather than information.
+- Validation: exact source block removal checked; final frame geometry reviewed against the existing caption overlay. No TypeScript build or Remotion render was run; no GitHub Actions workflow was triggered.
+
 ## 2026-11-20 — Scene 2 quote and sponsored-ad reveals aligned to narration
 - Moved the ₹200 customer quote reveal from local frame 44 to frame 159, matching the 19.3s spoken quote after the scene's 14.0s start; it clears at the 22.3s cue boundary.
 - Delayed the sponsored repair ad from local frame 326 to frame 435 (28.5s), when the narration reaches Instagram/Facebook scrolling; the direct-call CTA remains timed to the 31.05s call line.
