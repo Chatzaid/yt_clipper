@@ -87,6 +87,7 @@ export const Scene5ROI: React.FC = () => {
           alignItems: 'center',
           gap: 25,
           position: 'relative',
+          transform: 'translateY(-190px)',
         }}
       >
         <div
