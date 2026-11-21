@@ -41,7 +41,7 @@ jobs:
       - name: Install Python render dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install "manim==0.19.0" "numpy<2.3" "scipy==1.15.3"
+          python -m pip install "manim==0.19.0" "numpy<2.3" "scipy==1.15.3" "yt-dlp>=2025.1.15"
 
       - name: Validate source audio and subtitle inputs
         working-directory: fixreach-promo
@@ -111,6 +111,15 @@ jobs:
               raise SystemExit(f'Full video decode failed with exit code {decode.returncode}')
           print('PASS: base visual is valid 1080x1920 30fps and fully decodes.')
           PY
+
+      - name: Automatically source and composite Creative Commons YouTube B-roll
+        working-directory: fixreach-promo
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/auto_broll.py
+          test -s out/visuals_with_broll.mp4
+          test -s out/broll_sources.json
 
       - name: Mix normalized narration, ducked BGM, and synced SFX; burn SRT captions
         working-directory: fixreach-promo
