@@ -101,7 +101,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          DURATION="$(python -c 'import json; print(f"{json.load(open("scene-timing.json"))["duration_seconds"] + 1.0:.3f}")')"
+          DURATION="$(python -c 'import json; d=json.load(open("scene-timing.json"))["duration_seconds"]; print(f"{d + 1.0:.3f}")')"
           ffmpeg -y \
             -i out/base_visuals.mp4 \
             -i public/assets/voiceover.wav \
