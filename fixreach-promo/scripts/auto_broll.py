@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Find, download, and composite Creative Commons YouTube cutaways for FixReach."""
-import json, re, subprocess, sys
+import json, os, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +26,12 @@ def run(args, capture=True):
         raise RuntimeError(f"Command failed ({p.returncode}): {' '.join(args)}\n{(p.stderr or '')[-4000:]}")
     return p.stdout if capture else ""
 
+def yt_auth_args():
+    cookie_file = os.environ.get('YOUTUBE_COOKIES_FILE')
+    if cookie_file and Path(cookie_file).is_file() and Path(cookie_file).stat().st_size:
+        return ['--cookies', cookie_file]
+    return []
+
 def seconds(s):
     return f"{s:.3f}"
 
@@ -36,7 +42,7 @@ def main():
         duration = beat["end"] - beat["start"]
         print(f"Searching: {beat['id']} — {beat['query']}", flush=True)
         try:
-            data = json.loads(run(["yt-dlp","--skip-download","--dump-single-json",
+            data = json.loads(run(["yt-dlp", *yt_auth_args(), "--skip-download","--dump-single-json",
                                    f"ytsearch12:{beat['query']}"]))
         except Exception as exc:
             print(f"WARNING: YouTube search blocked/unavailable for {beat['id']}: {exc}. Keeping original designed scene.", flush=True)
@@ -56,7 +62,7 @@ def main():
         target = CACHE / f"{beat['id']}.mp4"
         if not target.exists() or target.stat().st_size < 10000:
             try:
-                run(["yt-dlp","--no-playlist","--no-warnings","--no-progress",
+                run(["yt-dlp", *yt_auth_args(), "--no-playlist","--no-warnings","--no-progress",
                      "-f","bv*[height>=720][ext=mp4]/bv*[height>=720]/bestvideo[height>=480]",
                      "--merge-output-format","mp4","--remux-video","mp4","--max-filesize","180M",
                      "-o",str(target),source_url], capture=False)
