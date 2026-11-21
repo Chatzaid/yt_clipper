@@ -20,7 +20,7 @@ Aur uske baad customer ka favourite dialogue.
 
 6
 00:00:19,300 --> 00:00:22,300
-Bhaiya, dusre wale ne toh 200 kam bola hai.
+Bhaiya, doosre wale ne toh 200 kam bola hai.
 
 7
 00:00:22,300 --> 00:00:28,500
@@ -68,7 +68,7 @@ Aur har enquiry sirf aur sirf aapki hoti hai.
 
 18
 00:01:13,150 --> 00:01:14,450
-Thoda simple maths samjhiye.
+Thoda simple maths samajhiye.
 
 19
 00:01:14,450 --> 00:01:18,500
