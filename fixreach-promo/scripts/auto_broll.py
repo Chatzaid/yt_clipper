@@ -35,13 +35,13 @@ def main():
     for beat in BEATS:
         duration = beat["end"] - beat["start"]
         print(f"Searching: {beat['id']} — {beat['query']}", flush=True)
-        data = json.loads(run(["yt-dlp","--flat-playlist","--dump-single-json",
+        data = json.loads(run(["yt-dlp","--skip-download","--dump-single-json",
                                f"ytsearch12:{beat['query']}"]))
         entries = data.get("entries") or []
         eligible = []
         for e in entries:
             license_name = str(e.get("license") or "").lower().replace("_","").replace(" ","")
-            if "creativecommon" in license_name and e.get("id") and e.get("url") is not None:
+            if "creativecommon" in license_name and e.get("id"):
                 eligible.append(e)
         if not eligible:
             print(f"WARNING: no YouTube Creative Commons results for {beat['id']}; leaving designed scene visible.", flush=True)
@@ -87,7 +87,7 @@ def main():
     last = "[0:v]"
     for i, (_, start, end) in enumerate(overlays, start=1):
         label = f"[v{i}]"
-        graph.append(f"[{i}:v]setpts=PTS-STARTPTS+{seconds(start)}/TB,trim=duration={seconds(end-start)}[{label[1:-1]}]")
+        graph.append(f"[{i}:v]trim=duration={seconds(end-start)},setpts=PTS-STARTPTS+{seconds(start)}/TB[{label[1:-1]}]")
         out = f"[mix{i}]"
         graph.append(f"{last}{label}overlay=0:0:eof_action=pass:enable='between(t,{seconds(start)},{seconds(end)})'{out}")
         last = out
