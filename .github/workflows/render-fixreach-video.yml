@@ -128,7 +128,7 @@ jobs:
           set -euo pipefail
           DURATION="$(python -c 'import json; d=json.load(open("scene-timing.json"))["duration_seconds"]; print(f"{d + 1.0:.3f}")')"
           ffmpeg -y \
-            -i out/base_visuals.mp4 \
+            -i out/visuals_with_broll.mp4 \
             -i public/audio/voiceover.wav \
             -stream_loop -1 -i public/audio/bgm.mp3 \
             -i out/sfx.wav \
