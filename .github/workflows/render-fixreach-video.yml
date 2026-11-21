@@ -115,8 +115,20 @@ jobs:
       - name: Automatically source and composite Creative Commons YouTube B-roll
         working-directory: fixreach-promo
         shell: bash
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
         run: |
           set -euo pipefail
+          if [ -n "${YOUTUBE_COOKIES:-}" ]; then
+            cookie_file="$RUNNER_TEMP/youtube-cookies.txt"
+            printf '%s' "$YOUTUBE_COOKIES" > "$cookie_file"
+            chmod 600 "$cookie_file"
+            export YOUTUBE_COOKIES_FILE="$cookie_file"
+            trap 'rm -f "$cookie_file"' EXIT
+            echo "Authenticated YouTube cookie file prepared (value is never logged)."
+          else
+            echo "YOUTUBE_COOKIES is not configured; B-roll search will run without authentication."
+          fi
           python scripts/auto_broll.py
           test -s out/visuals_with_broll.mp4
           test -s out/broll_sources.json
