@@ -166,7 +166,10 @@ jobs:
           h,m,tail=last.split(":"); sec,ms=tail.split(",")
           end=int(h)*3600+int(m)*60+int(sec)+int(ms)/1000
           assert abs(end-97.320)<0.01, f"Expected subtitles to end at 97.320s, got {end:.3f}s"
-          print(f"PASS: {duration:.3f}s 1080x1920 30fps MP4; stereo 48kHz AAC; {len(cues)} SRT cues; 1s end tail.")
+          pills=json.loads(Path("out/caption_manifest.json").read_text())
+          assert pills and all(1 <= item["word_count"] <= 3 for item in pills), "Caption pill must contain 1–3 words"
+          assert abs(pills[0]["start"]-0.520)<0.01 and abs(pills[-1]["end"]-97.320)<0.02, "Caption pill timeline does not cover the SRT timing"
+          print(f"PASS: {duration:.3f}s 1080x1920 30fps MP4; stereo 48kHz AAC; {len(pills)} rounded caption pills (max 3 words); 1s end tail.")
           PY
           ffmpeg -v error -i out/FixReach_Final_Master.mp4 -f null -
 
