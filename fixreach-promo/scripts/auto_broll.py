@@ -53,7 +53,7 @@ def main():
         if not target.exists() or target.stat().st_size < 10000:
             run(["yt-dlp","--no-playlist","--no-warnings","--no-progress",
                  "-f","bv*[height>=720][ext=mp4]/bv*[height>=720]/bestvideo[height>=480]",
-                 "--merge-output-format","mp4","--max-filesize","180M",
+                 "--merge-output-format","mp4","--remux-video","mp4","--max-filesize","180M",
                  "-o",str(target),source_url], capture=False)
         probe = json.loads(run(["ffprobe","-v","error","-show_entries","format=duration",
                                 "-of","json",str(target)]))
