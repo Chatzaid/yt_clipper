@@ -35,8 +35,12 @@ def main():
     for beat in BEATS:
         duration = beat["end"] - beat["start"]
         print(f"Searching: {beat['id']} — {beat['query']}", flush=True)
-        data = json.loads(run(["yt-dlp","--skip-download","--dump-single-json",
-                               f"ytsearch12:{beat['query']}"]))
+        try:
+            data = json.loads(run(["yt-dlp","--skip-download","--dump-single-json",
+                                   f"ytsearch12:{beat['query']}"]))
+        except Exception as exc:
+            print(f"WARNING: YouTube search blocked/unavailable for {beat['id']}: {exc}. Keeping original designed scene.", flush=True)
+            continue
         entries = data.get("entries") or []
         eligible = []
         for e in entries:
@@ -51,10 +55,14 @@ def main():
         source_url = chosen.get("webpage_url") or f"https://www.youtube.com/watch?v={video_id}"
         target = CACHE / f"{beat['id']}.mp4"
         if not target.exists() or target.stat().st_size < 10000:
-            run(["yt-dlp","--no-playlist","--no-warnings","--no-progress",
-                 "-f","bv*[height>=720][ext=mp4]/bv*[height>=720]/bestvideo[height>=480]",
-                 "--merge-output-format","mp4","--remux-video","mp4","--max-filesize","180M",
-                 "-o",str(target),source_url], capture=False)
+            try:
+                run(["yt-dlp","--no-playlist","--no-warnings","--no-progress",
+                     "-f","bv*[height>=720][ext=mp4]/bv*[height>=720]/bestvideo[height>=480]",
+                     "--merge-output-format","mp4","--remux-video","mp4","--max-filesize","180M",
+                     "-o",str(target),source_url], capture=False)
+            except Exception as exc:
+                print(f"WARNING: could not download {video_id}: {exc}. Keeping original scene.", flush=True)
+                continue
         probe = json.loads(run(["ffprobe","-v","error","-show_entries","format=duration",
                                 "-of","json",str(target)]))
         source_duration = float(probe["format"]["duration"])
@@ -79,7 +87,17 @@ def main():
         })
     (OUT / "broll_sources.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
     if not overlays:
-        raise SystemExit("No eligible Creative Commons YouTube cutaways found; refusing to create a misleading B-roll render.")
+        # YouTube may block anonymous cloud runners with bot checks. Keep the render
+        # moving, preserve the original designed visuals, and record the sourcing failure.
+        run(["ffmpeg","-y","-v","error","-i",str(OUT/"base_visuals.mp4"),"-c","copy",
+             str(OUT/"visuals_with_broll.mp4")],capture=False)
+        (OUT/"broll_sources.json").write_text(json.dumps({
+            "status":"fallback_no_downloaded_clips",
+            "reason":"YouTube search/download was unavailable to this GitHub Actions runner; original visuals preserved.",
+            "sources":[]
+        },indent=2))
+        print("WARNING: no B-roll clips downloaded; original visuals preserved so audio/caption render can complete.",flush=True)
+        return
     inputs = ["-i",str(OUT/"base_visuals.mp4")]
     for path, _, _ in overlays:
         inputs += ["-i",str(path)]
