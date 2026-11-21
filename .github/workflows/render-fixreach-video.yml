@@ -89,8 +89,28 @@ jobs:
           set -euo pipefail
           test -s out/base_visuals.mp4
           test -s out/sfx.wav
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=p=0 out/base_visuals.mp4 | grep -qx '1080,1920,30/1'
-          ffmpeg -v error -i out/base_visuals.mp4 -f null -
+          python - <<'PY'
+          import json, subprocess
+          probe = subprocess.run([
+              'ffprobe', '-v', 'error', '-select_streams', 'v:0',
+              '-show_entries', 'stream=width,height,r_frame_rate', '-of', 'json',
+              'out/base_visuals.mp4'
+          ], check=True, capture_output=True, text=True)
+          streams = json.loads(probe.stdout).get('streams', [])
+          if len(streams) != 1:
+              raise SystemExit(f'Expected exactly one video stream; found {len(streams)}: {streams}')
+          video = streams[0]
+          actual = (video.get('width'), video.get('height'), video.get('r_frame_rate'))
+          expected = (1080, 1920, '30/1')
+          print(f'Base visual stream: {actual[0]}x{actual[1]} @ {actual[2]}')
+          if actual != expected:
+              raise SystemExit(f'Expected {expected}, got {actual}')
+          decode = subprocess.run(['ffmpeg', '-hide_banner', '-v', 'error', '-i', 'out/base_visuals.mp4', '-f', 'null', '-'], capture_output=True, text=True)
+          if decode.returncode:
+              print(decode.stderr[-12000:])
+              raise SystemExit(f'Full video decode failed with exit code {decode.returncode}')
+          print('PASS: base visual is valid 1080x1920 30fps and fully decodes.')
+          PY
 
       - name: Mix normalized narration, ducked BGM, and synced SFX; burn SRT captions
         working-directory: fixreach-promo
