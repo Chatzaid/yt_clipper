@@ -48,19 +48,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p public/assets
-          # Keep compatibility with the repository's existing subtitle location.
-          if [ ! -s public/assets/subtitles.srt ] && [ -s public/audio/subtitles.srt ]; then
-            cp public/audio/subtitles.srt public/assets/subtitles.srt
-          fi
-          for file in public/assets/voiceover.wav public/assets/bgm.mp3 public/assets/subtitles.srt; do
+          # Source archive stores all three inputs under public/audio/.
+          for file in public/audio/voiceover.wav public/audio/bgm.mp3 public/audio/subtitles.srt; do
             if [ ! -s "$file" ]; then
               echo "::error file=$file::Required final-render input is missing from the feature branch."
               exit 1
             fi
           done
-          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/assets/voiceover.wav
-          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/assets/bgm.mp3
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/audio/voiceover.wav
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/audio/bgm.mp3
 
       - name: Generate synchronized SFX WAV files
         working-directory: fixreach-promo
@@ -104,10 +100,10 @@ jobs:
           DURATION="$(python -c 'import json; d=json.load(open("scene-timing.json"))["duration_seconds"]; print(f"{d + 1.0:.3f}")')"
           ffmpeg -y \
             -i out/base_visuals.mp4 \
-            -i public/assets/voiceover.wav \
-            -stream_loop -1 -i public/assets/bgm.mp3 \
+            -i public/audio/voiceover.wav \
+            -stream_loop -1 -i public/audio/bgm.mp3 \
             -i out/sfx.wav \
-            -filter_complex "[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[vo];[2:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.0794328[bgm];[bgm][vo]sidechaincompress=threshold=0.02:ratio=8:attack=18:release=320:makeup=1[ducked];[3:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.8[sfx];[vo][ducked][sfx]amix=inputs=3:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.95,apad=pad_dur=1[aout];[0:v]tpad=stop_mode=clone:stop_duration=1,subtitles=filename='public/assets/subtitles.srt':force_style='FontName=DejaVu Sans,FontSize=44,Bold=1,Outline=3,Shadow=1,MarginL=70,MarginR=70,MarginV=130,Alignment=2'[vout]" \
+            -filter_complex "[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[vo];[2:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.0794328[bgm];[bgm][vo]sidechaincompress=threshold=0.02:ratio=8:attack=18:release=320:makeup=1[ducked];[3:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.8[sfx];[vo][ducked][sfx]amix=inputs=3:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.95,apad=pad_dur=1[aout];[0:v]tpad=stop_mode=clone:stop_duration=1,subtitles=filename='public/audio/subtitles.srt':force_style='FontName=DejaVu Sans,FontSize=44,Bold=1,Outline=3,Shadow=1,MarginL=70,MarginR=70,MarginV=130,Alignment=2'[vout]" \
             -map "[vout]" -map "[aout]" \
             -t "$DURATION" \
             -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -r 30 \
@@ -132,7 +128,7 @@ jobs:
           assert a[0]["sample_rate"]=="48000" and a[0]["channels"]==2, a[0]
           duration=float(p["format"]["duration"])
           assert 98.25 <= duration <= 98.40, f"Expected voiceover + 1s tail, got {duration:.3f}s"
-          srt=Path("public/assets/subtitles.srt").read_text(encoding="utf-8")
+          srt=Path("public/audio/subtitles.srt").read_text(encoding="utf-8")
           cues=re.findall(r"(?m)^\s*\d+\s*\n(\d{2}:\d{2}:\d{2},\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2},\d{3})",srt)
           assert len(cues)==23, f"Expected 23 SRT cues, got {len(cues)}"
           last=cues[-1][1]
