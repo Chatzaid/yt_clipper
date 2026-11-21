@@ -1,90 +1,167 @@
-name: FixReach Stage 1 — visuals + Python SFX
+name: FixReach — final video render
+
 on:
   push:
-    branches: [feat/fixreach-promo-video]
-    paths: ['fixreach-promo/**', '.github/workflows/render-fixreach-video.yml']
+    branches:
+      - feat/fixreach-promo-video
   workflow_dispatch:
+
 permissions:
-  contents: read
+  contents: write
+
 concurrency:
-  group: fixreach-stage1-render
+  group: fixreach-final-render
   cancel-in-progress: false
+
 jobs:
-  render-stage-1:
+  render-final-master:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout FixReach feature branch
+        uses: actions/checkout@v4
         with:
           ref: feat/fixreach-promo-video
-      - uses: actions/setup-node@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python for scene/SFX assembly
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: pip
-      - name: Install native render dependencies
+
+      - name: Install FFmpeg and native Remotion/Manim dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg libcairo2-dev libpango1.0-dev pkg-config python3-dev
-      - name: Install Manim and Python SFX dependencies
+
+      - name: Install Python render dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install "manim==0.19.0" "numpy<2.3" "scipy==1.15.3"
+
+      - name: Validate source audio and subtitle inputs
+        working-directory: fixreach-promo
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/assets
+          # Keep compatibility with the repository's existing subtitle location.
+          if [ ! -s public/assets/subtitles.srt ] && [ -s public/audio/subtitles.srt ]; then
+            cp public/audio/subtitles.srt public/assets/subtitles.srt
+          fi
+          for file in public/assets/voiceover.wav public/assets/bgm.mp3 public/assets/subtitles.srt; do
+            if [ ! -s "$file" ]; then
+              echo "::error file=$file::Required final-render input is missing from the feature branch."
+              exit 1
+            fi
+          done
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/assets/voiceover.wav
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/assets/bgm.mp3
+
+      - name: Generate synchronized SFX WAV files
+        working-directory: fixreach-promo
+        run: node scripts/generate-sfx.js
+
       - name: Render Manim scene assets
         working-directory: fixreach-promo
         run: python scripts/render_manim.py
-      - name: Generate original Python SFX
-        working-directory: fixreach-promo
-        run: python scripts/generate_sfx.py
+
       - name: Install Remotion dependencies
         working-directory: fixreach-promo
         run: npm install --no-audit --no-fund
+
       - name: TypeScript preflight
         working-directory: fixreach-promo
         run: npm run typecheck
-      - name: Render visual composition
+
+      - name: Render 1080x1920 Remotion visuals
         working-directory: fixreach-promo
         run: npm run build
-      - name: Strip every audio stream from Stage 1 visuals
-        working-directory: fixreach-promo
-        run: ffmpeg -y -i out/base_visuals.mp4 -map 0:v:0 -an -c:v copy -movflags +faststart out/visuals.mp4
-      - name: Assemble synced SFX WAV (no VO or BGM)
+
+      - name: Assemble frame-accurate SFX track
         working-directory: fixreach-promo
         run: python scripts/mix_sfx.py
-      - name: Export 20 narration-beat review stills
+
+      - name: Verify base visual and SFX timeline
         working-directory: fixreach-promo
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p out/keyframes
-          for index in $(seq 0 19); do
-            beat=$((index + 1))
-            if [ "$index" -eq 19 ]; then frame=2885; else frame=$((index * 150 + 75)); fi
-            printf -v name '%02d' "$beat"
-            npx remotion still src/index.ts FixReachPromo "out/keyframes/beat_${name}.png" --frame="$frame" --image-format=png
-          done
-      - name: Verify Stage 1 deliverables
+          test -s out/base_visuals.mp4
+          test -s out/sfx.wav
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=p=0 out/base_visuals.mp4 | grep -qx '1080,1920,30/1'
+          ffmpeg -v error -i out/base_visuals.mp4 -f null -
+
+      - name: Mix normalized narration, ducked BGM, and synced SFX; burn SRT captions
         working-directory: fixreach-promo
         shell: bash
         run: |
           set -euo pipefail
-          test -s out/visuals.mp4 && test -s out/sfx.wav
-          test "$(find out/keyframes -maxdepth 1 -name 'beat_*.png' | wc -l)" -eq 20
-          ffprobe -v error -show_streams -show_format -of json out/visuals.mp4 > out/visuals_probe.json
-          ffprobe -v error -show_streams -show_format -of json out/sfx.wav > out/sfx_probe.json
-          python scripts/verify_stage1.py
-          ffmpeg -v error -i out/visuals.mp4 -f null -
-      - name: Upload Stage 1 review bundle
+          DURATION="$(python -c 'import json; print(f"{json.load(open("scene-timing.json"))["duration_seconds"] + 1.0:.3f}")')"
+          ffmpeg -y \
+            -i out/base_visuals.mp4 \
+            -i public/assets/voiceover.wav \
+            -stream_loop -1 -i public/assets/bgm.mp3 \
+            -i out/sfx.wav \
+            -filter_complex "[1:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[vo];[2:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.0794328[bgm];[bgm][vo]sidechaincompress=threshold=0.02:ratio=8:attack=18:release=320:makeup=1[ducked];[3:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.8[sfx];[vo][ducked][sfx]amix=inputs=3:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.95,apad=pad_dur=1[aout];[0:v]tpad=stop_mode=clone:stop_duration=1,subtitles=filename='public/assets/subtitles.srt':force_style='FontName=DejaVu Sans,FontSize=44,Bold=1,Outline=3,Shadow=1,MarginL=70,MarginR=70,MarginV=130,Alignment=2'[vout]" \
+            -map "[vout]" -map "[aout]" \
+            -t "$DURATION" \
+            -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -r 30 \
+            -c:a aac -b:a 192k -ar 48000 \
+            -movflags +faststart out/FixReach_Final_Master.mp4
+          test -s out/FixReach_Final_Master.mp4
+
+      - name: Run final media and subtitle QA
+        working-directory: fixreach-promo
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffprobe -v error -show_streams -show_format -of json out/FixReach_Final_Master.mp4 > out/final_probe.json
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          p=json.loads(Path("out/final_probe.json").read_text())
+          v=[s for s in p["streams"] if s["codec_type"]=="video"]
+          a=[s for s in p["streams"] if s["codec_type"]=="audio"]
+          assert len(v)==1 and len(a)==1, "Expected one video and one audio stream"
+          assert (v[0]["width"],v[0]["height"],v[0]["r_frame_rate"])==(1080,1920,"30/1"), v[0]
+          assert a[0]["sample_rate"]=="48000" and a[0]["channels"]==2, a[0]
+          duration=float(p["format"]["duration"])
+          assert 98.25 <= duration <= 98.40, f"Expected voiceover + 1s tail, got {duration:.3f}s"
+          srt=Path("public/assets/subtitles.srt").read_text(encoding="utf-8")
+          cues=re.findall(r"(?m)^\s*\d+\s*\n(\d{2}:\d{2}:\d{2},\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2},\d{3})",srt)
+          assert len(cues)==23, f"Expected 23 SRT cues, got {len(cues)}"
+          last=cues[-1][1]
+          h,m,tail=last.split(":"); sec,ms=tail.split(",")
+          end=int(h)*3600+int(m)*60+int(sec)+int(ms)/1000
+          assert abs(end-97.320)<0.01, f"Expected subtitles to end at 97.320s, got {end:.3f}s"
+          print(f"PASS: {duration:.3f}s 1080x1920 30fps MP4; stereo 48kHz AAC; {len(cues)} SRT cues; 1s end tail.")
+          PY
+          ffmpeg -v error -i out/FixReach_Final_Master.mp4 -f null -
+
+      - name: Publish upload-ready master to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: fixreach-final-v1
+          name: FixReach Final Master v1
+          body: |
+            Automatically rendered by GitHub Actions from feat/fixreach-promo-video.
+
+            Includes the Remotion visuals, normalized narration, sidechain-ducked background music, synchronized sound effects, and burned-in SRT captions.
+            Output: 1080x1920, 30fps, H.264/AAC.
+          files: fixreach-promo/out/FixReach_Final_Master.mp4
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keep a workflow artifact copy
         uses: actions/upload-artifact@v4
         with:
-          name: fixreach-stage1-visuals-sfx
-          path: |
-            fixreach-promo/out/visuals.mp4
-            fixreach-promo/out/sfx.wav
-            fixreach-promo/out/keyframes/beat_*.png
-            fixreach-promo/out/*_probe.json
-            fixreach-promo/public/manim/*.mp4
+          name: FixReach_Final_Master
+          path: fixreach-promo/out/FixReach_Final_Master.mp4
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
